@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintSet.WRAP_CONTENT
@@ -53,6 +54,7 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerView
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerViewManager
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_sharerombongandua.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
@@ -99,6 +101,7 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     val PERMISSIONS_REQUEST = 1
 
     var nama = ""
+    var foto =""
     @SuppressLint("UseSparseArrays")
     var markerMap: HashMap<Int, MarkerView> = HashMap<Int, MarkerView>()
 
@@ -152,6 +155,16 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     }
 
     fun ambildata() {
+        customview =
+            LayoutInflater.from(context!!.applicationContext)
+                .inflate(R.layout.marker, null)
+        customview.layoutParams =
+            FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+        val titleTextView: TextView =
+            customview.findViewById(R.id.marker_window_title)
+        val gambarView : ImageView =
+            customview.findViewById(R.id.gambarview)
+
 
         referencesharing =
             FirebaseDatabase.getInstance().reference.child("Selecta").child("sharing")
@@ -183,28 +196,23 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
                         i.getValue(ModelSharing::class.java)
                     var datalongitude = user!!.longitude
                     var datalatitude = user.latidude
+                    var nama = user.name
+                    var foto = user.foto
                     lokasi = LatLng(datalatitude, datalongitude)
-                    nama = user.name
                     /*               activity.updateMarkerPosition(lokasi)
                     */
 
 
                     //
                     if (setMarker == true) {
-                        mapboxMap.addMarker(
-                            MarkerOptions().position(lokasi)
-                                .title(nama)
-                        )
-
-                        customview =
-                            LayoutInflater.from(context!!.applicationContext)
-                                .inflate(R.layout.marker, null)
-                        customview.layoutParams =
-                            FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-                        val titleTextView: TextView =
-                            customview.findViewById(R.id.marker_window_title)
-                        titleTextView.text = nama
+//                        mapboxMap.addMarker(
+//                            MarkerOptions().position(lokasi)
+//                                .title(nama)
+//                        )
+                        Picasso.get().load(foto)
+                            .into(gambarView)
                         marker = MarkerView(lokasi, customview)
+                        titleTextView.text = nama
                         markerViewManager?.addMarker(marker)
                         markerMap.put(counter, marker)
                         counter++
@@ -223,21 +231,20 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
 
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
-        setMarker = true
 
 
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
             enableLocationComponent(it)
             markerViewManager = MarkerViewManager(mapboxfamily, mapboxMap)
-
-
-
-
             mapboxMap.addOnMapClickListener(this)
 
         }
+        setMarker = true
+if (setMarker == true)
+{
+    ambildata()
 
-        ambildata()
+}
 
 
     }
@@ -271,31 +278,6 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
 
         locationEngine!!.requestLocationUpdates(request, callback, context!!.mainLooper)
         locationEngine!!.getLastLocation(callback)
-    }
-
-    private val latLngEvaluator = object : TypeEvaluator<LatLng> {
-        private val latLng = LatLng()
-        override fun evaluate(fraction: Float, startValue: LatLng?, endValue: LatLng?): LatLng {
-            latLng.latitude =
-                (startValue!!.latitude + (endValue!!.getLatitude() - startValue.latitude) * fraction)
-            latLng.longitude =
-                (startValue.longitude + (endValue.getLongitude() - startValue.longitude) * fraction)
-            return latLng
-        }
-
-    }
-
-    private val animatorUpdateListener = object : ValueAnimator.AnimatorUpdateListener {
-        override fun onAnimationUpdate(valueAnimator: ValueAnimator?) {
-            val animatedPosition = valueAnimator!!.animatedValue as LatLng
-            geoJsonSource.setGeoJson(
-                Point.fromLngLat(
-                    animatedPosition.longitude,
-                    animatedPosition.latitude
-                )
-            )
-
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -491,7 +473,9 @@ class sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
                     databaseReference.child(activity.sessionManager.getKunci().toString())
                         .child("${activity.userID}/name")
                         .setValue(activity.sessionManager.getprofil())
-
+                    databaseReference.child(activity.sessionManager.getKunci().toString())
+                        .child("${activity.userID}/foto")
+                        .setValue(activity.sessionManager.getFoto())
 
                 }
 

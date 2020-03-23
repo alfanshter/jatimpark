@@ -175,11 +175,13 @@ class Tracking_Rombongan : AppCompatActivity() {
                 val user_nama = documentSnapshot.getString("nama")
                 nama_drawer.text = user_email
                 email_drawer.text = user_nama
+                sessionManager.setprofil(user_nama.toString())
                 val placeholderOption =
                     RequestOptions()
                 placeholderOption.placeholder(R.drawable.username)
                 Glide.with(container.context).setDefaultRequestOptions(placeholderOption)
                     .load(user_image).into(gambardrawer)
+                sessionManager.setFoto(user_image.toString())
             }
 
 

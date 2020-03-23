@@ -93,6 +93,19 @@ fun setLogin(check: Boolean){
         return Pref?.getString(profil,"")
     }
 
+    private val foto = "foto"
+    fun setFoto(check:String)
+    {
+        editor?.putString(foto,check)
+        editor?.commit()
+    }
+
+    fun getFoto():String?
+    {
+        return Pref?.getString(foto,"")
+    }
+
+
 
 
 
