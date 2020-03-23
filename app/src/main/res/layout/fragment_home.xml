@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
-        mapbox:mapbox_cameraZoom = "16"
+        mapbox:mapbox_cameraZoom = "18"
         mapbox:mapbox_cameraBearing="34.33"
         mapbox:mapbox_cameraTilt="50.25"
         mapbox:mapbox_cameraZoomMin="3"
@@ -24,28 +24,36 @@
         android:id="@+id/lokasibaru"
         android:layout_centerHorizontal="true"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/toilet"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="70dp"
+        android:src="@drawable/toilet"
+        />
+
+    <ImageView
+        android:id="@+id/toiletdua"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/toilet"
+        android:layout_below="@id/toilet"
+        />
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:text="navigation"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="400dp"
         android:id="@+id/navigasi"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="navigation"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="200dp"
-        android:id="@+id/navigasi2"
-        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_on_top_of_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="32dp"
         android:layout_alignParentBottom="true"
         />
 </RelativeLayout>

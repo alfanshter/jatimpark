@@ -15,16 +15,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
@@ -37,13 +35,13 @@ import com.mapbox.api.directions.v5.DirectionsCriteria
 import com.mapbox.api.directions.v5.MapboxDirections
 import com.mapbox.api.directions.v5.models.DirectionsResponse
 import com.mapbox.api.directions.v5.models.DirectionsRoute
-import com.mapbox.core.constants.Constants.PRECISION_6
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.Mapbox.getApplicationContext
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngQuad
 import com.mapbox.mapboxsdk.location.LocationComponent
@@ -54,19 +52,17 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.style.layers.*
-import com.mapbox.mapboxsdk.style.layers.Property.LINE_JOIN_ROUND
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.mapbox.mapboxsdk.style.sources.ImageSource
-import com.mapbox.mapboxsdk.utils.BitmapUtils
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions
 import com.mapbox.services.android.navigation.ui.v5.NavigationView
-import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.find
+import org.jetbrains.anko.image
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -115,37 +111,37 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
     private var locationEngine: LocationEngine? = null
     private val DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L
     private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
-    lateinit var butonnavigasi : Button
+    lateinit var butonnavigasi : ImageView
+    lateinit var toilet : ImageView
     private var callback = MainActivityLocationCallback(this)
 
     var lastlatitude: String? = null
 
     //==============VARIABEL RECYCLERVIEW=================================
-    private val TAG = "RVDirectionsActivity"
-    private val SYMBOL_ICON_ID = "SYMBOL_ICON_ID"
-    private val PERSON_ICON_ID = "PERSON_ICON_ID"
-    private val MARKER_SOURCE_ID = "MARKER_SOURCE_ID"
-    private val PERSON_SOURCE_ID = "PERSON_SOURCE_ID"
-    private val DASHED_DIRECTIONS_LINE_LAYER_SOURCE_ID = "DASHED_DIRECTIONS_LINE_LAYER_SOURCE_ID"
-    private val LAYER_ID = "LAYER_ID"
-    private val PERSON_LAYER_ID = "PERSON_LAYER_ID"
-    private val DASHED_DIRECTIONS_LINE_LAYER_ID = "DASHED_DIRECTIONS_LINE_LAYER_ID"
-    private val directionsOriginPoint = Point.fromLngLat( 112.5265,-7.8196)
-    private val possibleDestinations = arrayOf(
+    private val coordinates: Array<LatLng> = arrayOf<LatLng>(
         LatLng(-7.818716, 112.525346),
         LatLng(-7.818360, 112.525417),
         LatLng(-7.818039, 112.525205),
         LatLng(-7.818310, 112.524731),
         LatLng(-7.817992, 112.524632),
-        LatLng(-7.817648, 112.524571),
-        LatLng(-7.817184, 112.524829),
-        LatLng(-7.816620, 112.524659),
-        LatLng(-7.816306, 112.524600)
+        LatLng(-7.817648, 112.524571)
     )
-     var logic = false
 
-    private var dashedLineDirectionsFeatureCollection: FeatureCollection? = null
-    private val directionsRouteList: MutableList<DirectionsRoute> = ArrayList()
+    private val namalayout: Array<String> = arrayOf(
+        "Bioskop 4D",
+        "Kolam Renang",
+        "Kolam Renang Anak",
+        "Taman Bunga",
+        "Sepeda Air",
+        "Menunggang Kuda"
+        )
+
+    private val gambarrecycler = intArrayOf(R.drawable.selectasatu,R.drawable.selectadua,R.drawable.selectatiga,R.drawable.selectaempat,R.drawable.bannerdua,R.drawable.bannerbaru)
+
+    private val SYMBOL_ICON_ID = "SYMBOL_ICON_ID"
+    private val SOURCE_ID = "SOURCE_ID"
+    private val LAYER_ID = "LAYER_ID"
+    private var featureCollection: FeatureCollection? = null
     lateinit var recyclerView: RecyclerView
     //====================================================================
     override fun onCreateView(
@@ -163,9 +159,18 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         val mapView = view.findViewById(R.id.mapbox) as MapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        recyclerView = view.find(R.id.rv_on_top_of_map)
+        toilet = view.find(R.id.toilet)
         butonnavigasi = view.find(R.id.navigasi)
+        recyclerView = view.find(R.id.rv_on_top_of_map)
 
+        toilet.setOnClickListener {
+            val selectedLocationLatLng= LatLng(-7.817648, 112.524571)
+            val newCameraPosition: CameraPosition = CameraPosition.Builder()
+                .target(selectedLocationLatLng)
+                .build()
+            mapboxMap.easeCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition))
+            toast("toilet")
+        }
         butonnavigasi.setOnClickListener {
             var simulateRoute = true
             var options = NavigationLauncherOptions.builder()
@@ -191,71 +196,8 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
 
             Style.Builder().fromUri(Style.LIGHT) // Set up the image, source, and layer for the person icon,
 // which is where all of the routes will start from
-                .withImage(
-                    PERSON_ICON_ID,
-                    BitmapUtils.getBitmapFromDrawable(
-                        resources.getDrawable(R.drawable.ic_person)
-                    )!!
-                )
-                .withSource(
-                    GeoJsonSource(
-                        PERSON_SOURCE_ID,
-                        Feature.fromGeometry(directionsOriginPoint)
-                    )
-                )
-                .withLayer(
-                    SymbolLayer(
-                        PERSON_LAYER_ID,
-                        PERSON_SOURCE_ID
-                    ).withProperties(
-                        iconImage(PERSON_ICON_ID),
-                        iconSize(2f),
-                        iconAllowOverlap(true),
-                        iconIgnorePlacement(true)
-                    )
-                ) // Set up the image, source, and layer for the potential destination markers
-                .withImage(
-                    SYMBOL_ICON_ID,
-                    BitmapFactory.decodeResource(
-                        this.resources, R.drawable.red_marker
-                    )
-
-                )
-                .withSource(
-                    GeoJsonSource(
-                        MARKER_SOURCE_ID,
-                        initDestinationFeatureCollection()
-                    )
-                )
-                .withLayer(
-                    SymbolLayer(
-                        LAYER_ID,
-                        MARKER_SOURCE_ID
-                    ).withProperties(
-                        iconImage(SYMBOL_ICON_ID),
-                        iconAllowOverlap(true),
-                        iconIgnorePlacement(true),
-                        iconSize(0.2f)
-                    )
-                ) // Set up the source and layer for the direction route LineLayer
-                .withSource(GeoJsonSource(DASHED_DIRECTIONS_LINE_LAYER_SOURCE_ID))
-                .withLayerBelow(
-                    LineLayer(
-                        DASHED_DIRECTIONS_LINE_LAYER_ID,
-                        DASHED_DIRECTIONS_LINE_LAYER_SOURCE_ID
-                    )
-                        .withProperties(
-                            lineWidth(7f),
-                            lineJoin(LINE_JOIN_ROUND),
-                            lineColor(
-                                Color.parseColor(
-                                    "#2096F3"
-                                )
-                            )
-                        ),
-                    PERSON_LAYER_ID
-                )
         ) {
+
 
 
             // Set the latitude and longitude values for the image's four corners
@@ -278,7 +220,8 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             LoadGeoJson(this).execute()
             enableLocationComponent(it)
             addDestinationIconSymbolLayer(it)
-            getRoutesToAllPoints()
+            initFeatureCollection()
+            initMarkerIcons(it)
             initRecyclerView()
             mapboxMap.addOnMapClickListener(this)
 
@@ -287,6 +230,69 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
 
     }
 
+
+
+    //==========RecyclerVIew===========
+
+    private fun initFeatureCollection() {
+        featureCollection = FeatureCollection.fromFeatures(arrayOf<Feature>())
+        val featureList: MutableList<Feature> = ArrayList()
+        if (featureCollection != null) {
+            for (latLng in coordinates) {
+                featureList.add(
+                    Feature.fromGeometry(
+                        Point.fromLngLat(
+                            latLng.longitude,
+                            latLng.latitude
+                        )
+                    )
+                )
+            }
+            featureCollection = FeatureCollection.fromFeatures(featureList)
+        }
+    }
+
+    private fun initRecyclerView() {
+        val locationAdapter = TrackingFragment.LocationRecyclerViewAdapter(
+            createRecyclerViewLocations(),
+            mapboxMap
+        )
+        recyclerView.setLayoutManager(LinearLayoutManager(getApplicationContext(),
+            LinearLayoutManager.HORIZONTAL, true))
+        recyclerView.setItemAnimator(DefaultItemAnimator())
+        recyclerView.setAdapter(locationAdapter)
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun initMarkerIcons(@NonNull loadedMapStyle:Style) {
+        loadedMapStyle.addImage(SYMBOL_ICON_ID, BitmapFactory.decodeResource(
+            this.resources, R.drawable.red_marker))
+        loadedMapStyle.addSource(GeoJsonSource(SOURCE_ID, featureCollection))
+        loadedMapStyle.addLayer(SymbolLayer(LAYER_ID, SOURCE_ID).withProperties(
+            iconImage(SYMBOL_ICON_ID),
+            iconAllowOverlap(true),
+            iconSize(0.5f)
+        ))
+    }
+
+    private fun createRecyclerViewLocations():List<SingleRecyclerViewLocation> {
+        var locationList:ArrayList<SingleRecyclerViewLocation> = ArrayList()
+        for (x in coordinates.indices)
+        {
+            val singleLocation = SingleRecyclerViewLocation()
+            singleLocation.setName(namalayout[x])
+            singleLocation.setGambar(gambarrecycler[x])
+            singleLocation.setLocationCoordinates(coordinates[x])
+            locationList.add(singleLocation)
+        }
+        return locationList
+    }
+
+
+
+
+    //==============================
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -349,255 +355,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
     }
 
 
-    //==================Recycler View================
-
-
-    /**
-     * Create data fro the RecyclerView.
-     *
-     * @return a list of {@link SingleRecyclerViewLocation} objects for the RecyclerView.
-     */
-    private fun createRecyclerViewLocations(): List<SingleRecyclerViewLocation> {
-        var locationList: ArrayList<SingleRecyclerViewLocation> = ArrayList()
-        for (x in 0 until possibleDestinations.size) {
-            val singleLocation = SingleRecyclerViewLocation()
-            singleLocation.name =
-                String.format(getString(R.string.rv_directions_route_card_name), x)
-            singleLocation.availableTables = String.format(
-                getString(R.string.rv_directions_route_available_table_info),
-                Random().nextInt(possibleDestinations.size)
-            )
-            locationList.add(singleLocation)
-        }
-        return locationList
-    }
-
-    /**
-     * Loop through the possible destination list of LatLng locations and get
-     * the route for each destination.
-     */
-    //perulangan fungsi mengambil beberapa latlng sesuai
-    private fun getRoutesToAllPoints() {
-        for (singleLatLng in possibleDestinations) {
-            getRouterecycler(Point.fromLngLat(singleLatLng.longitude, singleLatLng.latitude))
-        }
-    }
-
-
-    /**
-     * Create a FeatureCollection to display the possible destination markers.
-     *
-     * @return a {@link FeatureCollection}, which represents the possible destinations.
-     */
-
-    private fun getRouterecycler(destination: Point) {
-        //ambil function lokasi sekarnag
-
-        val client = MapboxDirections.builder()
-        NavigationRoute.builder(context?.applicationContext)
-            .accessToken(getString(R.string.access_token))
-            .origin(origin)
-            .profile(DirectionsCriteria.PROFILE_DRIVING)
-            .destination(destination)
-            .build()
-            .getRoute(object : Callback<DirectionsResponse> {
-                @SuppressLint("LogNotTimber")
-                override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-                    Log.e(TAG, "Error" + t.message)
-                }
-
-                @SuppressLint("LogNotTimber")
-                override fun onResponse(
-                    @NonNull
-                    call: Call<DirectionsResponse>, @NonNull
-                    response: Response<DirectionsResponse>
-                ) {
-                    Log.d(TAG, " Response Codde :" + response.code())
-
-                    if (response.body() == null) {
-                        Log.d(
-                            TAG,
-                            "No routes found, make sure you set the right user and access token."
-                        )
-
-                        return
-                    } else if (response.body()!!.routes().size < 1) {
-                        Log.d(TAG, "No routes found")
-                        return
-                    }
-                    currentRoute
-                    directionsRouteList.add(response.body()!!.routes().get(0))
-
-                    //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-    }
-
-    /**
-     * Create a FeatureCollection to display the possible destination markers.
-     *
-     * @return a {@link FeatureCollection}, which represents the possible destinations.
-     */
-    //Create a FeatureCollection to display the possible destination markers.
-    private fun initDestinationFeatureCollection(): FeatureCollection? {
-        val featureList: MutableList<Feature> = ArrayList()
-        for (latLng in possibleDestinations) {
-            featureList.add(
-                Feature.fromGeometry(
-                    Point.fromLngLat(latLng.longitude, latLng.latitude)
-                )
-            )
-        }
-        return FeatureCollection.fromFeatures(featureList)
-    }
-
-    /**
-     * Set up the RecyclerView.
-     */
-    private fun initRecyclerView() {
-        recyclerView.layoutManager = LinearLayoutManager(
-            getApplicationContext(),
-            LinearLayoutManager.HORIZONTAL, true
-        )
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.adapter = LocationRecyclerViewAdapter(
-            this,
-            createRecyclerViewLocations(), mapboxMap
-        )
-        LinearSnapHelper().attachToRecyclerView(recyclerView)
-    }
-
-
-    /**
-     * Update the GeoJSON data for the direction route LineLayer.
-     *
-     * @param route The route to be drawn in the map's LineLayer that was set up above.
-     */
-
-    private fun drawNavigationPolylineRoute(route: DirectionsRoute) {
-        if (mapboxMap != null) {
-
-//            var destinationPoint = Point.fromLngLat(point.longitude, point.latitude)
-//            var originPoint = Point.fromLngLat(
-//                locationComponent.lastKnownLocation!!.longitude,
-//                locationComponent.lastKnownLocation!!.latitude
-//            )
-//            mapboxMap.style?.sources
-//                    getRoute(originPoint, destinationPoint)
-            mapboxMap.getStyle { style ->
-                val directionsRouteFeatureList: MutableList<Feature> = ArrayList()
-                val lineString = LineString.fromPolyline(route.geometry().toString(), PRECISION_6)
-                val lineStringCoordinates = lineString.coordinates()
-                for (i in 0 until lineStringCoordinates.size) {
-                    directionsRouteFeatureList.add(
-                        Feature.fromGeometry(
-                            LineString.fromLngLats(lineStringCoordinates)
-                        )
-                    )
-                }
-
-                dashedLineDirectionsFeatureCollection =
-                    FeatureCollection.fromFeatures(directionsRouteFeatureList)
-                val source: GeoJsonSource =
-                    style.getSourceAs(DASHED_DIRECTIONS_LINE_LAYER_SOURCE_ID)!!
-
-                if (source != null) {
-                    source.setGeoJson(dashedLineDirectionsFeatureCollection)
-                }
-            }
-        }
-    }
-
-
-    internal class LocationRecyclerViewAdapter internal constructor(
-        activity: TrackingFragment,
-        locationList: List<SingleRecyclerViewLocation>,
-        mapBoxMap: MapboxMap
-    ) : RecyclerView.Adapter<LocationRecyclerViewAdapter.MyViewHolder>() {
-        private val locationList: List<SingleRecyclerViewLocation>
-        private val map: MapboxMap
-        private val weakReference: WeakReference<TrackingFragment>
-
-        init {
-            this.locationList = locationList
-            this.map = mapBoxMap
-            this.weakReference = WeakReference(activity)
-
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            val itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.rv_directions_card, parent, false)
-            return MyViewHolder(itemView)
-        }
-
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
-            val singleRecyclerViewLocation = locationList.get(position)
-            holder.name.text = singleRecyclerViewLocation.name
-            holder.numOfAvailableTables.text = singleRecyclerViewLocation.availableTables
-            holder.setClickListener(object : ItemClickListener {
-
-                override fun onClick(view: View?, position: Int) {
-
-                    weakReference.get()
-                        ?.drawNavigationPolylineRoute(
-
-                            weakReference.get()!!.directionsRouteList[position]
-                        )                }
-
-            })
-        }
-
-        internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view),
-            View.OnClickListener {
-            var name: TextView
-            var numOfAvailableTables: TextView
-            var singleCard: CardView
-            private var clickListener: ClickListener? = null
-
-            init {
-                name = view.findViewById(R.id.location_title_tv)
-                numOfAvailableTables = view.findViewById(R.id.location_num_of_beds_tv)
-                singleCard = view.findViewById(R.id.single_location_cardview)
-                singleCard.setOnClickListener(this)
-            }
-
-            fun setClickListener(itemClickListener: ItemClickListener) {
-                this.clickListener = itemClickListener
-            }
-
-            override fun onClick(v: View?) {
-                clickListener?.onClick(v, layoutPosition)
-            }
-
-
-        }
-
-        override fun getItemCount(): Int {
-            return locationList.size
-
-        }
-    }
-
-    /**
-     * POJO model class for a single location in the RecyclerView.
-     */
-
-    internal class SingleRecyclerViewLocation {
-        lateinit var name: String
-        lateinit var availableTables: String
-    }
-
-    interface ItemClickListener : ClickListener {
-        override fun onClick(view: View?, position: Int)
-    }
-
-    interface ClickListener {
-        fun onClick(view: View?, position: Int)
-    }
-    //===================END RECYCLERVIEW===========================
-
 
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
@@ -623,7 +380,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             locationComponent.lastKnownLocation!!.longitude,
             locationComponent.lastKnownLocation!!.latitude
         )
-        toast("hasilnya : ${locationComponent.lastKnownLocation!!.longitude.toString()}")
+        toast("hasilnya : ${locationComponent.lastKnownLocation!!.longitude}")
         //meload marker pada saat di click
         mapboxMap.style?.getSourceAs<GeoJsonSource>("destination-source-id")
             ?.setGeoJson(Feature.fromGeometry(destinationPoint))
@@ -765,7 +522,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             .getRoute(object : Callback<DirectionsResponse> {
                 @SuppressLint("LogNotTimber")
                 override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
-                    Log.e(TAG, "Error" + t.message)
+//                    Log.e(TAG, "Error" + t.message)
                 }
 
                 @SuppressLint("LogNotTimber")
@@ -774,12 +531,12 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
                     call: Call<DirectionsResponse>, @NonNull
                     response: Response<DirectionsResponse>
                 ) {
-                    Log.d(TAG, " Response Codde :" + response.code())
+//                    Log.d(TAG, " Response Codde :" + response.code())
                     if (response.body() == null) {
-                        Log.e(TAG, "Tidak ada Route, pastikan menggunakan token yang tepat")
+//                        Log.e(TAG, "Tidak ada Route, pastikan menggunakan token yang tepat")
                         return
                     } else if (response.body()!!.routes().size < 1) {
-                        Log.e(TAG, "Tidak ada Route")
+//                        Log.e(TAG, "Tidak ada Route")
                         return
                     }
                     //menggabar route di map
@@ -855,5 +612,72 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         loadedMapStyle.addLayer(destinationSymbolLayer)
     }
 
+
+    internal class LocationRecyclerViewAdapter(
+        locationList: List<SingleRecyclerViewLocation>,
+        mapBoxMap: MapboxMap
+    ) :
+        RecyclerView.Adapter<LocationRecyclerViewAdapter.MyViewHolder>() {
+        private val locationList: List<SingleRecyclerViewLocation>
+        private val map: MapboxMap
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+            val itemView: View = LayoutInflater.from(parent.context)
+                .inflate(R.layout.rv_on_top_of_map_card, parent, false)
+            return MyViewHolder(itemView)
+        }
+
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            val singleRecyclerViewLocation: SingleRecyclerViewLocation = locationList[position]
+            holder.gambar.setImageResource(singleRecyclerViewLocation.getGambar())
+            holder.name.setText(singleRecyclerViewLocation.getName())
+
+            holder.setClickListener(object : ItemClickListener {
+                override fun onClick(view: View?, position: Int) {
+                    val selectedLocationLatLng: LatLng =
+                        locationList[position].getLocationCoordinates()!!
+                    val newCameraPosition: CameraPosition = CameraPosition.Builder()
+                        .target(selectedLocationLatLng)
+                        .build()
+
+
+                    map.easeCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition))
+                }
+            })
+        }
+
+        override fun getItemCount(): Int {
+            return locationList.size
+        }
+
+        internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+            var name: TextView
+            var singleCard: CardView
+            var gambar : ImageView
+            private var clickListener: ItemClickListener? = null
+            fun setClickListener(itemClickListener: ItemClickListener?) {
+                clickListener = itemClickListener
+                Toast.makeText(getApplicationContext(),"doremi",Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onClick(view: View?) {
+                clickListener!!.onClick(view, layoutPosition)
+            }
+
+            init {
+                name = view.findViewById(R.id.location_title_tv)
+                singleCard = view.findViewById(R.id.single_location_cardview)
+                gambar = view.findViewById(R.id.gambarrecycler)
+                singleCard.setOnClickListener(this)
+            }
+        }
+
+        init {
+            this.locationList = locationList
+            map = mapBoxMap
+        }
+        interface ItemClickListener {
+            fun onClick(view: View?, position: Int)
+        }
+    }
 
 }

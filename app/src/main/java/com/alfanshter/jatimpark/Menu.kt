@@ -5,7 +5,6 @@ import android.widget.ImageView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.jatimpark.Rombongan.NamaProfil
-import com.alfanshter.jatimpark.ui.Tracking.TrackingFragment.SingleRecyclerViewLocation
 import com.karan.churi.PermissionManager.PermissionManager
 import kotlinx.android.synthetic.main.activity_menu.*
 import org.jetbrains.anko.startActivity

@@ -16,6 +16,7 @@ import org.jetbrains.anko.startActivity
 
 class Loading : AppCompatActivity() {
     private var Value = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loading)

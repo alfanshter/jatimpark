@@ -7,7 +7,6 @@ import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.jatimpark.Session.SessionManager
-import com.karumi.dexter.listener.single.PermissionListener
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.location.LocationComponent
@@ -15,11 +14,9 @@ import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
-import com.sinch.android.rtc.SinchClient
-import com.sinch.android.rtc.calling.CallClient
-import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
 import java.lang.ref.WeakReference
+
 
 class lokasi : AppCompatActivity() {
     lateinit var mapboks: MapboxMap
@@ -107,6 +104,11 @@ class lokasi : AppCompatActivity() {
             }
 
         }
+
+
+
+
+
     }
 
     companion object {

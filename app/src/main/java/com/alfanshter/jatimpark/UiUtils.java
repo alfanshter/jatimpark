@@ -17,6 +17,12 @@ public class UiUtils {
             }
         }
     }
+
+
+
+
+
+
     public static void setFullscreen(Context context, boolean status){
         if(status){
             ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);

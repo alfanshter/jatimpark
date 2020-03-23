@@ -31,13 +31,15 @@
     </com.goodiebag.pinview.Pinview>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/kodebuton"
         android:layout_below="@+id/pinview"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="70dp"
         android:layout_marginTop="50dp"
         android:text="Enter"
         />
+
+
 
 </RelativeLayout>

@@ -34,13 +34,45 @@
     </com.goodiebag.pinview.Pinview>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:id="@+id/sharingbuton"
         android:layout_below="@+id/pinsharing"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="70dp"
         android:layout_marginTop="50dp"
         android:text="Enter"
         />
+
+    <Button
+        android:layout_marginLeft="20dp"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/sharingbuton"
+        android:text="SCAN QODE"
+        android:layout_below="@id/pinsharing"
+        android:layout_marginTop="50dp"
+        android:id="@+id/scan"
+        />
+
+    <Button
+        android:layout_marginLeft="20dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="GENERATE KODE"
+        android:layout_below="@id/sharingbuton"
+        android:layout_marginTop="20dp"
+        android:id="@+id/generate"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/qrcode"
+        android:layout_below="@id/generate"
+        />
+
+
+
 
 </RelativeLayout>

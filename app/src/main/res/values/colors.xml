@@ -24,6 +24,9 @@
     <color name="purple">#7c4dff</color>
     <color name="outline_gray">#cccccc</color>
 
+    <color name="mapboxYellowFaint">#FCFCDF</color>
 
+    <color name="mapboxPurpleFaint">#f2effa</color>
+    <color name="mapboxPurpleDark10">#5E3AD2</color>
 
 </resources>
