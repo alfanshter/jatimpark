@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.alfanshter.jatimpark.ui.shareRombongan
 
 import android.animation.ObjectAnimator
@@ -174,7 +176,7 @@ class ShareRombongan : Fragment(),  AnkoLogger{
                     pin.value = text
                     reference.child(userID).child("key").setValue(code)
                     reference.child(userID).child("date").setValue(date)
-                    referencebaru.child("sharing").child(code).child(userID).setValue(ModelBaru("", -7.817527,    112.524507))
+                    referencebaru.child("sharing").child(code).child(userID).setValue(ModelBaru("", -7.817527,    112.524507,"https://cdn0-production-images-kly.akamaized.net/RxUo9GGJA_1oDBlykD64OHEuVVg=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/2396228/original/055603500_1540900672-lion-3040797_1920.jpg"))
 
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful){

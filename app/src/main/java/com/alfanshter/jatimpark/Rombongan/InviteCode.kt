@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.alfanshter.jatimpark.Rombongan
 
 import android.app.ProgressDialog
@@ -55,7 +57,7 @@ class InviteCode : AppCompatActivity(),AnkoLogger {
             reference.child(userID).child("name").setValue(nama)
             reference.child(userID).child("key").setValue(code)
             reference.child(userID).child("date").setValue(date)
-            referencebaru.child("sharing").child(code!!).child(userID).setValue(ModelBaru("",0.00,sessionManager.getlongitude()!!.toDouble()))
+            referencebaru.child("sharing").child(code!!).child(userID).setValue(ModelBaru("",0.00,sessionManager.getlongitude()!!.toDouble(),""))
 
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful){

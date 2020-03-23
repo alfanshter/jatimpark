@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.alfanshter.jatimpark.ui.generate
 
 import android.app.ProgressDialog
@@ -74,7 +76,7 @@ class GenerateCode : Fragment(),AnkoLogger {
             userID = user.uid
             reference.child(userID).child("key").setValue(code)
             reference.child(userID).child("date").setValue(date)
-            referencebaru.child("sharing").child(code).child(userID).setValue(ModelBaru("", -7.817527,    112.524507))
+            referencebaru.child("sharing").child(code).child(userID).setValue(ModelBaru("", -7.817527,    112.524507,""))
 
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful){

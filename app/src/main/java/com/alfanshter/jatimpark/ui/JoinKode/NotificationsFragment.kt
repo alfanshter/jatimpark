@@ -1,6 +1,7 @@
+@file:Suppress("DEPRECATION")
+
 package com.alfanshter.jatimpark.ui.JoinKode
 
-import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,7 +58,7 @@ class NotificationsFragment : Fragment(),AnkoLogger {
                         info("informasi : ${it.key}")
                         if (it.key.toString().equals(pinview.value.toString())) {
                             referencesharing.child(it.key.toString()).child(userID)
-                                .setValue(ModelBaru("", 0.00, sessionManager.getlongitude()!!.toDouble()))
+                                .setValue(ModelBaru("", 0.00, sessionManager.getlongitude()!!.toDouble(),""))
                             sessionManager.setKunci(pinview.value.toString())
                         }
                     }
