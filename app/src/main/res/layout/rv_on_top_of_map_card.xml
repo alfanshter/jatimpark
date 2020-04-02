@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
-    android:layout_height="150dp"
+    android:layout_width="150dp"
+    android:layout_height="120dp"
     android:id="@+id/single_location_cardview"
     android:layout_marginEnd="8dp"
     android:layout_marginLeft="8dp"
@@ -13,12 +13,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/mapboxYellowFaint"
         android:gravity="center_horizontal"
         android:orientation="vertical">
         <ImageView
             android:layout_width="200dp"
-            android:layout_height="130dp"
+            android:layout_height="100dp"
             android:src="@drawable/perahu"
             android:id="@+id/gambarrecycler"
             />
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/mapboxPurpleDark10"
-            android:textSize="20sp"/>
+            />
 
     </LinearLayout>
 

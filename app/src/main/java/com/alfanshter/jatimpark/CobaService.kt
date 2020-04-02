@@ -1,3 +1,4 @@
+/*
 package com.alfanshter.jatimpark
 
 import android.content.*
@@ -103,3 +104,4 @@ class CobaService : AppCompatActivity(),SharedPreferences.OnSharedPreferenceChan
         }
     }
 }
+*/

@@ -8,7 +8,7 @@
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="450dp"
         android:layout_marginTop="50dp"
         mapbox:mapbox_cameraZoom = "18"
         mapbox:mapbox_cameraBearing="34.33"
@@ -26,34 +26,46 @@
         />
     <ImageView
         android:id="@+id/toilet"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="70dp"
-        android:src="@drawable/toilet"
+        android:background="@drawable/track5"
         />
 
     <ImageView
         android:id="@+id/toiletdua"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/toilet"
+        android:background="@drawable/track5"
         android:layout_below="@id/toilet"
         />
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="navigation"
+        android:src="@drawable/track7"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="450dp"
         android:id="@+id/navigasi"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_on_top_of_map"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
-        />
+        android:layout_height="300dp"
+        android:layout_below="@id/mapbox"
+        android:background="@drawable/track1"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_on_top_of_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="-30dp" />
+
+
+    </LinearLayout>
+
 </RelativeLayout>

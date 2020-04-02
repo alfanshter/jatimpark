@@ -1,78 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bgc"
     tools:context=".ui.shareRombongan.ShareRombongan">
 
-    <TextView
+    <ImageView
+        android:id="@+id/sharingkode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Masukkan Kode rombongan kamu"
-        android:id="@+id/sharingkode"
-        android:textSize="20dp"
-        android:layout_marginTop="100dp"
-        />
-
-    <com.goodiebag.pinview.Pinview
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sharingkode"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        app:pinLength="6"
-        app:pinWidth="40dp"
-        app:pinHeight="60dp"
-        app:inputType="number"
-        app:cursorVisible="true"
-        app:forceKeyboard="true"
-        android:id="@+id/pinsharing"
-        >
-    </com.goodiebag.pinview.Pinview>
-
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sharingbuton"
-        android:layout_below="@+id/pinsharing"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="50dp"
-        android:text="Enter"
-        />
-
-    <Button
-        android:layout_marginLeft="20dp"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/sharingbuton"
-        android:text="SCAN QODE"
-        android:layout_below="@id/pinsharing"
-        android:layout_marginTop="50dp"
-        android:id="@+id/scan"
-        />
-
-    <Button
-        android:layout_marginLeft="20dp"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="GENERATE KODE"
-        android:layout_below="@id/sharingbuton"
-        android:layout_marginTop="20dp"
-        android:id="@+id/generate"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/entouragecode"
+        mapbox:layout_constraintBottom_toTopOf="@+id/qrcode"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/qrcode"
-        android:layout_below="@id/generate"
-        />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/generate"
+        mapbox:layout_constraintBottom_toTopOf="@+id/scan"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toBottomOf="@+id/sharingkode" />
+
+    <ImageView
+        android:id="@+id/generate"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/group67"
+        mapbox:layout_constraintBottom_toBottomOf="@+id/scan"
+        mapbox:layout_constraintEnd_toStartOf="@+id/scan"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="@+id/scan" />
+
+    <ImageView
+        android:id="@+id/scan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/group10"
+        mapbox:layout_constraintBottom_toTopOf="@+id/text"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toEndOf="@+id/generate"
+        mapbox:layout_constraintTop_toBottomOf="@+id/qrcode" />
+
+    <ImageView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="29dp"
+        android:layout_marginLeft="29dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/masukkankoderombongankamu"
+        mapbox:layout_constraintBottom_toTopOf="@+id/linear2"
+        mapbox:layout_constraintStart_toStartOf="@+id/linear2"
+        mapbox:layout_constraintTop_toBottomOf="@+id/scan" />
+
+    <LinearLayout
+        android:id="@+id/linear2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="21dp"
+        android:background="@drawable/rectangle15"
+        mapbox:layout_constraintBottom_toTopOf="@+id/sharingbuton"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toBottomOf="@+id/text">
+
+        <com.goodiebag.pinview.Pinview
+            android:id="@+id/pinsharing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            app:cursorVisible="true"
+            app:forceKeyboard="true"
+            app:inputType="number"
+            app:pinHeight="80dp"
+            app:pinLength="6"
+            app:pinWidth="43dp"></com.goodiebag.pinview.Pinview>
 
 
+    </LinearLayout>
 
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/sharingbuton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginBottom="55dp"
+        android:background="@drawable/group11"
+        android:text="Enter"
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toBottomOf="@+id/linear2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

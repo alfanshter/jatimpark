@@ -9,5 +9,7 @@ class MainPresenter {
     fun changeFragment(manager: FragmentManager, fragment: Fragment, id:Int){
         var transaction: FragmentTransaction = manager.beginTransaction()
         transaction.replace(id,fragment).commit()
+
     }
+
 }

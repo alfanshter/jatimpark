@@ -183,7 +183,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
 
         }
         butonnavigasi.isEnabled = true
-        butonnavigasi.setBackgroundResource(R.color.mapboxBlue)
 
         return view
 

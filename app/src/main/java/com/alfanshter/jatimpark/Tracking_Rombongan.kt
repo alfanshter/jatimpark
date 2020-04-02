@@ -1,11 +1,17 @@
+@file:Suppress("DEPRECATED_IDENTITY_EQUALS")
+
 package com.alfanshter.jatimpark
 
 import android.Manifest
+import android.Manifest.*
+import android.Manifest.permission.*
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SyncRequest
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -74,6 +80,7 @@ class Tracking_Rombongan : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
     private var mFirestore: FirebaseFirestore? = null
     private var mUserId: String? = null
+    private val REQUEST_CODE_PERMISSIONS = 101
 
     var namaprofil = ""
     var emailprofil = ""
@@ -128,33 +135,11 @@ class Tracking_Rombongan : AppCompatActivity() {
 //
 //        }
 //    }
-    @RequiresApi(Build.VERSION_CODES.M)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking__rombongan)
-
-
-//        instance = this
-//        Dexter.withActivity(this)
-//            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-//            .withListener(object : PermissionListener{
-//                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-//                    updateLocation()
-//                }
-//
-//                override fun onPermissionRationaleShouldBeShown(
-//                    permission: PermissionRequest?,
-//                    token: PermissionToken?
-//                ) {
-//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                }
-//
-//                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-//                        toast("kamu harus accept permisi")
-//                     }
-//
-//            })
-
+    checkPermission()
         mAuth = FirebaseAuth.getInstance()
 
         sessionManager = SessionManager(this)
@@ -162,6 +147,7 @@ class Tracking_Rombongan : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar?.title = "Hello Toolbar"
+
         auth = FirebaseAuth.getInstance()
         mFirestore = FirebaseFirestore.getInstance()
         mUserId = mAuth!!.currentUser!!.uid
@@ -253,8 +239,133 @@ class Tracking_Rombongan : AppCompatActivity() {
 
     }
 
+    @SuppressLint("InlinedApi")
+    fun checkPermission(){
+
+        val permissionAccessCoarseLocationApproved = ActivityCompat
+            .checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+
+        if (permissionAccessCoarseLocationApproved) {
+            val backgroundLocationPermissionApproved = ActivityCompat
+                .checkSelfPermission(this, permission.ACCESS_BACKGROUND_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED
+
+            if (backgroundLocationPermissionApproved) {
+               startService<ServiceLocation>()
+                // App can access location both in the foreground and in the background.
+                // Start your service that doesn't have a foreground service type
+                // defined.
+            } else {
+                // App can only access location in the foreground. Display a dialog
+                // warning the user that your app must have all-the-time access to
+                startService<ServiceLocation>()
+                // location in order to function properly. Then, request background
+                // location.
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    REQUEST_CODE_PERMISSIONS
+                )
+            }
+        } else {
+            // App doesn't have access to the device's location at all. Make full request
+            // for permission.
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
+    }
 
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            var foreground = false
+            var background = false
+            for (i in permissions.indices) {
+                if (permissions[i].equals(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        ignoreCase = true
+                    )
+                ) { //foreground permission allowed
+                    if (grantResults[i] >= 0) {
+                        foreground = true
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Foreground location permission allowed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        continue
+                    } else {
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Location Permission denied",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        break
+                    }
+                }
+                if (permissions[i].equals(
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        ignoreCase = true
+                    )
+                ) {
+                    if (grantResults[i] >= 0) {
+                        foreground = true
+                        background = true
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Background location location permission allowed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Background location location permission denied",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+            if (foreground) {
+                if (background) {
+                    toast("Start Foreground and Background Location Updates")
+                    startService(Intent(this, ServiceLocation::class.java))
+                } else {
+                    toast("Start foreground location updates")
+                    startService(Intent(this, ServiceLocation::class.java))
+                }
+            }
+        }
+
+    }
+
+
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//
+//        //If the permission has been granted...//
+//
+//        if (requestCode == PERMISSIONS_REQUEST && grantResults.size == 1
+//            && grantResults[0] == PERMISSION_GRANTED
+//        ) {
+//
+//            //...then start the GPS tracking service//
+//
+//            startService(Intent(this, ServiceLocation::class.java))
+//
+//        } else {
+//
+//            //If the user denies the permission request, then display a toast with some more information//
+//
+//            Toast.makeText(this, "Please enable location services to allow GPS tracking", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
 
 //    private fun updateLocation() {

@@ -67,9 +67,9 @@ class ShareRombongan : Fragment(),  AnkoLogger{
     private lateinit var viewModel: ShareRombonganViewModel
     lateinit var user: FirebaseUser
     lateinit var userID: String
-    private lateinit var butonkode: Button
-    private lateinit var generate :Button
-    private lateinit var scan : Button
+    private lateinit var butonkode: ImageView
+    private lateinit var generate :ImageView
+    private lateinit var scan : ImageView
     lateinit var sessionManager: SessionManager
     private lateinit var referencejoin: DatabaseReference
     private lateinit var pin : Pinview

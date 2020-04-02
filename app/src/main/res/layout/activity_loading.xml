@@ -7,20 +7,14 @@
     tools:context=".Loading"
     >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:background="@drawable/selecta"
-        android:id="@+id/judul"
-        android:layout_centerHorizontal="true"
-        />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="300dp"
-        android:background="@drawable/jatimparkgroup"
-        android:layout_below="@id/judul"
+        android:background="@drawable/group27"
         android:id="@+id/judul2"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         />
     <ProgressBar
         android:id="@+id/loading"
