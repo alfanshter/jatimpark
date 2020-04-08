@@ -51,6 +51,23 @@
     <string name="collection_user_locations">user_location</string>
     <string name="rv_card_name">Location #%1$d</string>
     <string name="rv_card_bed_info">nomor</string>
+    <string name="permission_rationale">All the time location permission required for core functionality</string>
 
+
+    <string name="notification_text">Tracking, tap to cancel</string>
+    <string name="transport_id" translatable="false">123</string>
+    <string name="firebase_email" translatable="false">test@example.com</string>
+    <string name="firebase_password" translatable="false">password</string>
+
+    <string name="unknown_location">Unknown location</string>
+    <string name="ok">OK</string>
+    <string name="permission_denied_explanation">All the time location permission denied; needed for core         functionality.</string>
+    <string name="settings">Settings</string>
+
+    <plurals name="num_locations_reported">
+        <item quantity="zero">No location reported</item>
+        <item quantity="one">One location reported</item>
+        <item quantity="other">%d locations reported</item>
+    </plurals>
 
 </resources>

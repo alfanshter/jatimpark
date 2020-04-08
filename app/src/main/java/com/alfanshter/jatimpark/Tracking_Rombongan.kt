@@ -2,42 +2,23 @@
 
 package com.alfanshter.jatimpark
 
-import android.Manifest
-import android.Manifest.*
-import android.Manifest.permission.*
-import android.annotation.SuppressLint
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.SyncRequest
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.auth.Login
 import com.alfanshter.jatimpark.ui.Calling.Calling
-import com.alfanshter.jatimpark.ui.Calling.Panggilan
 import com.alfanshter.jatimpark.ui.Tracking.TrackingFragment
 import com.alfanshter.jatimpark.ui.dashboard.DashboardFragment
 import com.alfanshter.jatimpark.ui.generate.GenerateCode
 import com.alfanshter.jatimpark.ui.shareRombongan.ShareRombongan
-import com.alfanshter.jatimpark.ui.shareRombongan.listuser.UsersFragment
+import com.alfanshter.jatimpark.ui.shareRombongan.Sharerombongandua
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -45,20 +26,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.type.LatLng
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_tracking__rombongan.*
 import kotlinx.android.synthetic.main.drawer_header.*
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startService
-import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.toast
-import java.net.CacheRequest
 import java.util.*
 
 class Tracking_Rombongan : AppCompatActivity() {
@@ -89,6 +59,7 @@ class Tracking_Rombongan : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_dashboard -> {
+                supportFragmentManager.beginTransaction().detach(Sharerombongandua())
                 mainPresenter.changeFragment(supportFragmentManager,
                     DashboardFragment(),R.id.nav_host_fragment)
                 return@OnNavigationItemSelectedListener true
@@ -137,9 +108,10 @@ class Tracking_Rombongan : AppCompatActivity() {
 //    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking__rombongan)
-    checkPermission()
+
         mAuth = FirebaseAuth.getInstance()
 
         sessionManager = SessionManager(this)
@@ -221,6 +193,7 @@ class Tracking_Rombongan : AppCompatActivity() {
                             mAuth!!.signOut()
                             sessionManager.setLogin(false)
                             sessionManager.setNama(false)
+                            sessionManager.setIDStatusUser("0")
                             startActivity<Login>()
                             finish()
 
@@ -238,158 +211,31 @@ class Tracking_Rombongan : AppCompatActivity() {
         nav_view.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
     }
-
-    @SuppressLint("InlinedApi")
-    fun checkPermission(){
-
-        val permissionAccessCoarseLocationApproved = ActivityCompat
-            .checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
-
-        if (permissionAccessCoarseLocationApproved) {
-            val backgroundLocationPermissionApproved = ActivityCompat
-                .checkSelfPermission(this, permission.ACCESS_BACKGROUND_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED
-
-            if (backgroundLocationPermissionApproved) {
-               startService<ServiceLocation>()
-                // App can access location both in the foreground and in the background.
-                // Start your service that doesn't have a foreground service type
-                // defined.
-            } else {
-                // App can only access location in the foreground. Display a dialog
-                // warning the user that your app must have all-the-time access to
-                startService<ServiceLocation>()
-                // location in order to function properly. Then, request background
-                // location.
-                ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                    REQUEST_CODE_PERMISSIONS
-                )
-            }
-        } else {
-            // App doesn't have access to the device's location at all. Make full request
-            // for permission.
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                REQUEST_CODE_PERMISSIONS
-            )
-        }
-    }
-
+/*
+    private fun startTrackerService() {
+        startService(Intent(this, TrackerService::class.java))
+        finish()
+    }*/
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            var foreground = false
-            var background = false
-            for (i in permissions.indices) {
-                if (permissions[i].equals(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        ignoreCase = true
-                    )
-                ) { //foreground permission allowed
-                    if (grantResults[i] >= 0) {
-                        foreground = true
-                        Toast.makeText(
-                            getApplicationContext(),
-                            "Foreground location permission allowed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        continue
-                    } else {
-                        Toast.makeText(
-                            getApplicationContext(),
-                            "Location Permission denied",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        break
-                    }
-                }
-                if (permissions[i].equals(
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                        ignoreCase = true
-                    )
-                ) {
-                    if (grantResults[i] >= 0) {
-                        foreground = true
-                        background = true
-                        Toast.makeText(
-                            getApplicationContext(),
-                            "Background location location permission allowed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            getApplicationContext(),
-                            "Background location location permission denied",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-            if (foreground) {
-                if (background) {
-                    toast("Start Foreground and Background Location Updates")
-                    startService(Intent(this, ServiceLocation::class.java))
-                } else {
-                    toast("Start foreground location updates")
-                    startService(Intent(this, ServiceLocation::class.java))
-                }
-            }
+        if ((requestCode == PERMISSIONS_REQUEST && grantResults.size == 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED))
+        {
+//             startTrackerService()
         }
+        else
+        {
+            finish()
+        }
+
 
     }
 
 
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-//
-//        //If the permission has been granted...//
-//
-//        if (requestCode == PERMISSIONS_REQUEST && grantResults.size == 1
-//            && grantResults[0] == PERMISSION_GRANTED
-//        ) {
-//
-//            //...then start the GPS tracking service//
-//
-//            startService(Intent(this, ServiceLocation::class.java))
-//
-//        } else {
-//
-//            //If the user denies the permission request, then display a toast with some more information//
-//
-//            Toast.makeText(this, "Please enable location services to allow GPS tracking", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
-
-//    private fun updateLocation() {
-//        buildLocationRequest()
-//        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=
-//                PackageManager.PERMISSION_GRANTED)
-//            return
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//        fusedLocationProviderClient.requestLocationUpdates(locationRequest,getPendingIntent())
-//    }
-//
-//    private fun getPendingIntent(): PendingIntent? {
-//            val intent = Intent(this@Tracking_Rombongan, ServiceTracking::class.java)
-//             intent.action = ServiceTracking.ACTION_PROCESS_UPDATE
-//            return PendingIntent.getBroadcast(this@Tracking_Rombongan,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
-//    }
-//
-//    private fun buildLocationRequest() {
-//        locationRequest = LocationRequest()
-//        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//        locationRequest.interval = 5000
-//        locationRequest.fastestInterval = 3000
-//        locationRequest.smallestDisplacement = 10f
-//
-//    }
 
 }

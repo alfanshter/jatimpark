@@ -2,64 +2,32 @@
 
 package com.alfanshter.jatimpark.ui.shareRombongan
 
-import android.animation.ObjectAnimator
-import android.animation.TypeEvaluator
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.graphics.BitmapFactory
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alfanshter.jatimpark.Model.ModelBaru
-import com.alfanshter.jatimpark.Model.ModelSharing
-import com.alfanshter.jatimpark.Model.Util.FcmPush
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
-import com.alfanshter.jatimpark.ui.Calling.WaitingCalling
-import com.alfanshter.jatimpark.ui.dashboard.DashboardFragment
-import com.firebase.geofire.GeoFire
-import com.firebase.geofire.GeoQuery
 import com.goodiebag.pinview.Pinview
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.BarcodeFormat
-import com.google.zxing.Result
-import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import com.mapbox.android.core.location.*
-import com.mapbox.android.core.permissions.PermissionsListener
-import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import kotlinx.android.synthetic.main.share_rombongan_fragment.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
-import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import java.lang.Exception
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.jvm.internal.InlineMarker
-import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
 class ShareRombongan : Fragment(),  AnkoLogger{
@@ -133,7 +101,7 @@ class ShareRombongan : Fragment(),  AnkoLogger{
                             sessionManager.setKunci(pin.value.toString())
                             sessionManager.setIDStatusUser("1")
                             val fr = fragmentManager?.beginTransaction()
-                            fr?.replace(R.id.nav_host_fragment,sharerombongandua())
+                            fr?.replace(R.id.nav_host_fragment,Sharerombongandua())
                             fr?.commit()
                         }
                     }
@@ -145,7 +113,7 @@ class ShareRombongan : Fragment(),  AnkoLogger{
         if (sessionManager.getIDStatusUser().equals("1"))
         {
             val fr = fragmentManager?.beginTransaction()
-            fr?.replace(R.id.nav_host_fragment,sharerombongandua())
+            fr?.replace(R.id.nav_host_fragment,Sharerombongandua())
             fr?.commit()
         }
 

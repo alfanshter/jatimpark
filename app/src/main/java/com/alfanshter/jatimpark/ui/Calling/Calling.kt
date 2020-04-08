@@ -8,24 +8,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.alfanshter.jatimpark.Global
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
-import com.alfanshter.jatimpark.SinchService
-import com.alfanshter.jatimpark.SinchStatus
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
-import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.startService
-import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.toast
-
 
 
 /**

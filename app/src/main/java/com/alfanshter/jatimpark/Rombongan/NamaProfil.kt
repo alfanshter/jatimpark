@@ -6,15 +6,10 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import com.alfanshter.jatimpark.Model.ModelBaru
-import com.alfanshter.jatimpark.Model.ModelNamaProfil
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.Tracking_Rombongan
-import com.alfanshter.jatimpark.cekkode
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -31,7 +26,6 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_nama_profil.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import java.io.File
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*

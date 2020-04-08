@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.microphone"
@@ -33,24 +33,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-            tools:ignore="GoogleAppIndexingWarning"
+        tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-        <service
-            android:name=".ui.Calling.fcm.FirebaseNotifikasi">
+
+
+        <service android:name=".ui.Calling.fcm.FirebaseNotifikasi">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity android:name=".ui.Calling.WaitingCalling" />
-
-        <service
-            android:name=".ServiceLocation"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location"
-            />
-
         <activity android:name=".ui.shareRombongan.listuser.NotificationActivity">
             <intent-filter>
                 <action android:name="com.alfanshter.jatimpark.TARGETNOTIFICATION" />
@@ -111,6 +104,19 @@
             android:name=".SinchService"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".ServiceLocation.MyIntentService"
+            android:exported="false"></service>
+
+        <receiver
+            android:name=".ServiceLocation.MyReceiver"
+            android:exported="true">     <intent-filter>
+            <action android:name="com.alfanshter.alfanshter.ServiceLocation.MyReceiver.ACTION_PROCESS_UPDATES" />
+        </intent-filter>
+        </receiver>
+
+
 
         <activity
             android:name=".IncommingCallActivity"

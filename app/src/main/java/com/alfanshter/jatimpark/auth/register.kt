@@ -13,6 +13,8 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
@@ -30,6 +32,7 @@ class register : AppCompatActivity() {
     private var mStorage: StorageReference? = null
     private var mAuth: FirebaseAuth? = null
     private var mFirestore: FirebaseFirestore? = null
+    lateinit var databaseReference: DatabaseReference
     private var imageUri: Uri? = null
     private var myUrl = ""
 
@@ -68,7 +71,8 @@ class register : AppCompatActivity() {
             val username = user.text.toString().trim()
             val password = pass.text.toString().trim()
             val nomor = mob.text.toString().trim()
-
+            val longitude  =  "112.926894"
+            val latitude  = "-7.705582"
 
             if (email.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() && nomor.isNotEmpty()) {
 
@@ -89,6 +93,8 @@ class register : AppCompatActivity() {
                                 return@Continuation user_profile.downloadUrl
                             }).addOnCompleteListener(OnCompleteListener { task ->
                                 if (uploadTask.isSuccessful) {
+                                    databaseReference = FirebaseDatabase.getInstance().getReference("Selecta").child("Users").child(user_id)
+
                                     val downloadUrl = task.result
                                     myUrl = downloadUrl.toString()
 
@@ -100,8 +106,14 @@ class register : AppCompatActivity() {
                                     userMap["image"] = myUrl
                                     userMap["token_id"] = token_id
                                     userMap["telepon"] = nomor
+                                    userMap["notelp"] = nomor
                                     userMap["password"] = password
                                     userMap["nama"] = username
+                                    userMap["longitude"] = longitude
+                                    userMap["latitude"] = latitude
+                                    userMap["email"] = email
+                                    userMap["iduser"] = user_id
+                                    databaseReference.setValue(userMap)
                                     mFirestore!!.collection("Users").document(user_id)
                                         .set(userMap).addOnSuccessListener {
                                             registerProgressBar.visibility = View.INVISIBLE

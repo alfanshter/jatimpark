@@ -3,22 +3,12 @@ package com.alfanshter.jatimpark.ui.Calling
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.SinchService
-import com.alfanshter.jatimpark.SinchStatus
-import com.alfanshter.jatimpark.Tracking_Rombongan
-import com.alfanshter.jatimpark.ui.shareRombongan.sharerombongandua
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_send.*
 import kotlinx.android.synthetic.main.activity_waiting_calling.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startService
-import org.jetbrains.anko.support.v4.startService
 import org.jetbrains.anko.toast
 import java.util.HashMap
 

@@ -13,7 +13,6 @@ import com.alfanshter.jatimpark.Session.SessionManager
 import com.google.firebase.database.*
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.toast
 
 /**
@@ -58,7 +57,7 @@ class Scanner : Fragment(),ZXingScannerView.ResultHandler {
                             sessionManager.setKunci(pinjoin)
                             sessionManager.setIDStatusUser("1")
                             val fr = fragmentManager?.beginTransaction()
-                            fr?.replace(R.id.nav_host_fragment,sharerombongandua())
+                            fr?.replace(R.id.nav_host_fragment,Sharerombongandua())
                             fr?.commit()
                         }
                         else{

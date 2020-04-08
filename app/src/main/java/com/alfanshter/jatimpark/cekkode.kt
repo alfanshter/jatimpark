@@ -3,7 +3,6 @@ package com.alfanshter.jatimpark
 import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.alfanshter.jatimpark.Model.ModelBaru
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -11,7 +10,6 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_cekkode.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.toast
 
 class cekkode : AppCompatActivity(), AnkoLogger {
     private lateinit var auth: FirebaseAuth

@@ -6,7 +6,6 @@ import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
@@ -35,9 +34,6 @@ class Login : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     lateinit var manager: PermissionManager
-    private val mProgressBar: ProgressBar? = null
-var statuslogin = false
-    private val mFirestore: FirebaseFirestore? = null
     lateinit var db : DocumentReference
 
 
@@ -165,24 +161,6 @@ var statuslogin = false
         finish()
     }
 
-    fun realtimedatabase()
-    {
-        pass.text.toString().trim()
-        users.toString().trim()
-        var userss = users.text.toString()
-        var password = pass.text.toString()
-            /*.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    progressdialog.dismiss()
-                    toast("user telah terregistrasi")
-                    //menambah sesion
-                    sessionManager.setLogin(true)
-                    sessionManager.setIduser(userss)
-                } else {
-                    progressdialog.dismiss()
-                    toast("user gagal di registrasi")
-                }
-            }*/
-    }
+
 }
 

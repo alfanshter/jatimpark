@@ -2,18 +2,20 @@ package com.alfanshter.jatimpark.Session
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.alfanshter.jatimpark.Rombongan.NamaProfil
+import com.alfanshter.jatimpark.Utils.Utils
 
-class SessionManager(private val context: Context?) {
-val privateMode = 0
-val privateName ="login"
-var Pref :SharedPreferences?=context?.getSharedPreferences(privateName,privateMode)
+class SessionManager(private val context: Context ?) {
+    val privateMode = 0
+    val privateName ="login"
+    var Pref :SharedPreferences?=context?.getSharedPreferences(privateName,privateMode)
     var editor : SharedPreferences.Editor?=Pref?.edit()
 
-private val islogin = "login"
-fun setLogin(check: Boolean){
-    editor?.putBoolean(islogin,check)
-    editor?.commit()
-}
+    private val islogin = "login"
+    fun setLogin(check: Boolean){
+        editor?.putBoolean(islogin,check)
+        editor?.commit()
+    }
 
     fun getLogin():Boolean?
     {
@@ -68,7 +70,7 @@ fun setLogin(check: Boolean){
         return Pref?.getString(kunci,"")
     }
 
-//status nama
+    //status nama
     private val isnama = "nama"
     fun setNama(check: Boolean){
         editor?.putBoolean(isnama,check)

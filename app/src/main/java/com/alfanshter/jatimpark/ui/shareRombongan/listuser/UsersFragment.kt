@@ -1,33 +1,23 @@
 package com.alfanshter.jatimpark.ui.shareRombongan.listuser
 
 
-import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alfanshter.jatimpark.Model.ModelSharing
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Adapter.UsersRecyclerAdapter
 import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Model.Users
-import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Model.copy
-import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Model.copyid
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
-import com.google.firebase.iid.FirebaseInstanceId
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.support.v4.toast
 import java.util.*
 import kotlin.collections.ArrayList
 
