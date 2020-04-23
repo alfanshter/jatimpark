@@ -7,97 +7,92 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bgc"
-    tools:context=".ui.shareRombongan.ShareRombongan">
+    tools:context=".ui.shareRombongan.ShareRombongan"
+    android:layout_marginTop="60dp"
+    >
 
     <ImageView
         android:id="@+id/sharingkode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="60dp"
         android:src="@drawable/entouragecode"
-        mapbox:layout_constraintBottom_toTopOf="@+id/qrcode"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <ImageView
         android:id="@+id/qrcode"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:src="@drawable/generate"
-        mapbox:layout_constraintBottom_toTopOf="@+id/scan"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/sharingkode" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.22000003" />
 
     <ImageView
         android:id="@+id/generate"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/group67"
-        mapbox:layout_constraintBottom_toBottomOf="@+id/scan"
-        mapbox:layout_constraintEnd_toStartOf="@+id/scan"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toTopOf="@+id/scan" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48000002" />
 
     <ImageView
         android:id="@+id/scan"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginBottom="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/group10"
-        mapbox:layout_constraintBottom_toTopOf="@+id/text"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toEndOf="@+id/generate"
-        mapbox:layout_constraintTop_toBottomOf="@+id/qrcode" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48000002" />
 
     <ImageView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginLeft="29dp"
-        android:layout_marginBottom="20dp"
+
         android:background="@drawable/masukkankoderombongankamu"
-        mapbox:layout_constraintBottom_toTopOf="@+id/linear2"
-        mapbox:layout_constraintStart_toStartOf="@+id/linear2"
-        mapbox:layout_constraintTop_toBottomOf="@+id/scan" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.58"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generate"
+        app:layout_constraintVertical_bias="0.060000002" />
 
     <LinearLayout
         android:id="@+id/linear2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="21dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/rectangle15"
-        mapbox:layout_constraintBottom_toTopOf="@+id/sharingbuton"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/text">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text"
+        app:layout_constraintVertical_bias="0.100000024">
 
         <com.goodiebag.pinview.Pinview
             android:id="@+id/pinsharing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             app:cursorVisible="true"
             app:forceKeyboard="true"
             app:inputType="number"
-            app:pinHeight="80dp"
+            app:pinHeight="60dp"
             app:pinLength="6"
-            app:pinWidth="43dp"></com.goodiebag.pinview.Pinview>
+            app:pinWidth="35dp"></com.goodiebag.pinview.Pinview>
 
 
     </LinearLayout>
@@ -105,19 +100,16 @@
 
     <ImageView
         android:id="@+id/sharingbuton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="55dp"
-        android:layout_marginLeft="55dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginRight="55dp"
-        android:layout_marginBottom="55dp"
         android:background="@drawable/group11"
         android:text="Enter"
-        mapbox:layout_constraintBottom_toBottomOf="parent"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/linear2" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

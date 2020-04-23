@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alfanshter.jatimpark.R
@@ -26,6 +27,7 @@ class Calling : Fragment(),AnkoLogger {
     private var mUserId: String? = null
     private var mUserName: String? = null
     private var mCurrentId: String? = null
+    private var nomorku : TextView? = null
     private lateinit var sessionManager: SessionManager
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,8 @@ class Calling : Fragment(),AnkoLogger {
         // Inflate the layout for this fragment
         val root = inflater.inflate(R.layout.fragment_calling, container, false)
         panggilan = root.find(R.id.panggil)
+        nomorku = root.find(R.id.main_myid)
+        nomorku!!.text = Appsc.USER_ID
         sessionManager = SessionManager(context)
 
         panggilan.setOnClickListener(View.OnClickListener {

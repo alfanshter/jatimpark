@@ -18,14 +18,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.alfanshter.jatimpark.R
+import com.alfanshter.jatimpark.ServiceLocation.MyIntentService
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.Tracking_Rombongan
+import com.alfanshter.jatimpark.ui.shareRombongan.ShareRombongan
+import com.alfanshter.jatimpark.ui.shareRombongan.ShareRombonganduaactivity
 import com.alfanshter.jatimpark.ui.shareRombongan.Sharerombongandua
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.DateFormat
 import java.util.*
-internal object Utils {
+internal object Utils : AppCompatActivity() {
+    lateinit var sessionManager: SessionManager
+
+
+    fun sessionmaanager(string: String){
+        var alfan = string
+    }
+
     const val KEY_LOCATION_UPDATES_REQUESTED = "location-updates-requested"
     const val KEY_LOCATION_UPDATES_RESULT = "location-update-result"
     const val CHANNEL_ID = "channel_01"
@@ -146,7 +156,7 @@ internal object Utils {
 
 
         val sb = StringBuilder()
-            val  sessionManager:SessionManager
+
 
         for (location in locations) {
             sb.append("(")
@@ -159,13 +169,15 @@ internal object Utils {
             val auth  = FirebaseAuth.getInstance()
             val userida = auth.currentUser!!.uid
             val database = FirebaseDatabase.getInstance()
-            if (!alfan.equals("20"))
-            {
-                val myRef = database.getReference("Selecta").child("sharing").child(alfan).child(userida)
+
+/*
+                val myRef = database.getReference("Selecta").child("sharing").child(kode).child(userida)
                 myRef.child("longitude/").setValue(location.longitude)
                 myRef.child("latidude/").setValue(location.latitude)
+            myRef.child("image/").setValue(gambar)
+            myRef.child("name/").setValue(nama)
+*/
 
-            }
 
         }
         return sb.toString()

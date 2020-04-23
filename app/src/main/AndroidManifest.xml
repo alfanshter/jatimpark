@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alfanshter.jatimpark">
-
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
@@ -35,7 +34,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-
+        <activity android:name=".ui.shareRombongan.ShareRombonganduaactivity"></activity>
+        <activity android:name=".Activity.InfoPembuat" />
 
         <service android:name=".ui.Calling.fcm.FirebaseNotifikasi">
             <intent-filter>
@@ -104,19 +104,17 @@
             android:name=".SinchService"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name=".ServiceLocation.MyIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <receiver
             android:name=".ServiceLocation.MyReceiver"
-            android:exported="true">     <intent-filter>
-            <action android:name="com.alfanshter.alfanshter.ServiceLocation.MyReceiver.ACTION_PROCESS_UPDATES" />
-        </intent-filter>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.alfanshter.alfanshter.ServiceLocation.MyReceiver.ACTION_PROCESS_UPDATES" />
+            </intent-filter>
         </receiver>
-
-
 
         <activity
             android:name=".IncommingCallActivity"

@@ -7,11 +7,13 @@ import android.Manifest
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -26,6 +28,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintSet.WRAP_CONTENT
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -43,11 +46,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.modes.CameraMode
@@ -58,6 +65,8 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerView
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerViewManager
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_sharerombongandua.*
@@ -65,6 +74,7 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
+import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -75,6 +85,7 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     PermissionsListener, AnkoLogger, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var sessionManager: SessionManager
     private lateinit var butonkode: Button
+    private lateinit var butonqrcode: Button
     private lateinit var mapboxMap: MapboxMap
     private var markerViewManager: MarkerViewManager? = null
     private lateinit var locationComponent: LocationComponent
@@ -91,7 +102,7 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     lateinit var userID: String
     private lateinit var marker: MarkerView
     private var setMarker: Boolean = false
-    private var hasDraw: Boolean = false
+    private var markerbaru : Boolean = false
     private var statusjoin: Boolean = false
     private lateinit var animator: ValueAnimator
     private lateinit var geoJsonSource: GeoJsonSource
@@ -106,7 +117,16 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     val PERMISSIONS_REQUEST = 1
 
 
+    //popup
+    var dialog_bidding: Dialog? = null
+    private var hasDraw: Boolean = false
+
     companion object {
+
+        private const val MARKER_SOURCE = "markers-source"
+        private const val MARKER_STYLE_LAYER = "markers-style-layer"
+        private const val MARKER_IMAGE = "custom-marker"
+
         private val TAG: String? = Sharerombongandua::class.simpleName
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
         private var root: View? = null
@@ -114,8 +134,7 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
         private val FASTEST_UPDATE_INTERVAL: Long = 10000
         private val MAX_WAIT_TIME: Long = UPDATE_INTERVAL * 5 // Every 5 minutes.
 
-        var setmarker = false
-        lateinit var customview: View
+     var customview: View? = null
 
     }
 
@@ -152,10 +171,14 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
         val refresh: Button = root!!.find(R.id.refresh)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
-
-        setMarker = true
         sessionManager = SessionManager(context)
+        hasDraw = false
+        ambildata()
+            //show  pop up
+        dialog_bidding = Dialog(activity!!)
+        dialog_bidding!!.setContentView(R.layout.popupqrcode)
+                //============
+        setMarker = true
         Utils.alfan = sessionManager.getKunci().toString()
         auth = FirebaseAuth.getInstance()
         user = auth.currentUser!!
@@ -163,7 +186,12 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
         val db = FirebaseFirestore.getInstance()
 
         butonkode = root!!.find(R.id.keluarshare)
+        butonqrcode = root!!.find(R.id.btn_qrcode)
 
+
+        butonqrcode.setOnClickListener {
+            showpopup()
+        }
         butonview.setOnClickListener {
             val fr = fragmentManager?.beginTransaction()
             fr?.replace(R.id.nav_host_fragment, UsersFragment())
@@ -202,7 +230,27 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
 
     }
 
+    private fun addMarkers(@NonNull loadedMapStyle: Style) {
+        val features: MutableList<Feature> = ArrayList()
 
+        features.add(Feature.fromGeometry(Point.fromLngLat(112.9841, -7.6634)))
+
+/* Source: A data source specifies the geographic coordinate where the image marker gets placed. */loadedMapStyle.addSource(
+            GeoJsonSource(MARKER_SOURCE, FeatureCollection.fromFeatures(features))
+        )
+
+/* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */loadedMapStyle.addLayer(
+            SymbolLayer(MARKER_STYLE_LAYER, MARKER_SOURCE)
+                .withProperties(
+                    PropertyFactory.iconAllowOverlap(true),
+                    PropertyFactory.iconIgnorePlacement(true),
+                    PropertyFactory.iconImage(MARKER_IMAGE),  // Adjust the second number of the Float array based on the height of your marker image.
+                    // This is because the bottom of the marker should be anchored to the coordinate point, rather
+                    // than the middle of the marker being the anchor point on the map.
+                    PropertyFactory.iconOffset(arrayOf(0f, -52f))
+                )
+        )
+    }
 
     fun ambildata() {
 
@@ -222,9 +270,6 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
             @SuppressLint("InflateParams")
             override fun onDataChange(p0: DataSnapshot) {
 
-                mapboxMap.clear()
-                mapboxMap.markers.clear()
-
                 for (values in markerMap.values) {
                     markerViewManager?.removeMarker(values)
                 }
@@ -236,43 +281,38 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
                     var datalongitude = user!!.longitude
                     var datalatitude = user.latidude
                     var nama = user.name
-                    var foto = user.foto
+                    var foto = user.image
                     lokasi = LatLng(datalatitude, datalongitude)
                     /*               activity.updateMarkerPosition(lokasi)
                     */
 
                     //
-                    mapboxMap.addMarker(
-                        MarkerOptions().position(lokasi)
-                            .title(nama)
-                    )
 
-                    if (setMarker == true) {
 
                         if (markerViewManager != null) {
-                            customview = LayoutInflater.from(context!!.applicationContext)
-                                .inflate(R.layout.marker, null)
-                            customview.layoutParams =
-                                FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-                            val titleTextView: TextView =
-                                customview.findViewById(R.id.marker_window_title)
-                            val gambarView: ImageView =
-                                customview.findViewById(R.id.gambarview)
 
-                            Picasso.get().load(foto)
-                                .into(gambarView)
-                            marker = MarkerView(lokasi, customview)
-                            titleTextView.text = nama
-                            markerViewManager?.addMarker(marker)
-                            markerMap.put(counter, marker)
-                            counter++
-                            //break
+                                customview = LayoutInflater.from(context!!.applicationContext)
+                                    .inflate(R.layout.marker, null)
+                                customview!!.layoutParams =
+                                    FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                                val titleTextView: TextView =
+                                    customview!!.findViewById(R.id.marker_window_title)
+                                val gambarView: ImageView =
+                                    customview!!.findViewById(R.id.gambarview)
 
+                                Picasso.get().load(foto).resize(50,50)
+                                    .into(gambarView)
+                                marker = MarkerView(lokasi, customview!!)
+                                titleTextView.text = nama
+                                markerViewManager?.addMarker(marker)
+                                markerMap.put(counter, marker)
+                                counter++
+                                //break
                         }
 
-                    }
 
                 }
+                hasDraw = true
 
 
             }
@@ -283,14 +323,23 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
 
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
+
         mapboxMap.setStyle(Style.MAPBOX_STREETS) {
 
             enableLocationComponent(it)
             markerViewManager = MarkerViewManager(mapboxfamily, mapboxMap)
             mapboxMap.addOnMapClickListener(this)
 
+            if (setMarker == true)
+            {
+                try {
+                    ambildata()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+
         }
-        ambildata()
 
 
     }
@@ -327,10 +376,12 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
     }
 
 
+/*
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val preferences = context.getSharedPreferences("pref", 0)
     }
+*/
 
     override fun onStart() {
         super.onStart()
@@ -369,12 +420,13 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
         mapboxfamily.onLowMemory()
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
-
         if (locationEngine != null) {
             locationEngine!!.removeLocationUpdates(callback)
         }
+
         mapboxfamily.onDestroy()
 
     }
@@ -446,7 +498,7 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
                         .child("${activity.userID}/name")
                         .setValue(activity.sessionManager.getprofil())
                     databaseReference.child(activity.sessionManager.getKunci().toString())
-                        .child("${activity.userID}/foto")
+                        .child("${activity.userID}/image")
                         .setValue(activity.sessionManager.getFoto())
 
                 }
@@ -641,5 +693,26 @@ class Sharerombongandua : Fragment(), OnMapReadyCallback, MapboxMap.OnMapClickLi
         }
     }
 
+
+    fun showpopup(){
+        val textClose: TextView
+        val qrcode: ImageView
+        val id: TextView
+
+        qrcode = dialog_bidding!!.findViewById(R.id.img_qrcode)
+        textClose = dialog_bidding!!.findViewById(R.id.txtclose)
+       id = dialog_bidding!!.findViewById(R.id.txt_popup)
+
+        val gambar = sessionManager.getKunci()
+        val barcodeEndocer = BarcodeEncoder()
+        val bitmap = barcodeEndocer.encodeBitmap(gambar, BarcodeFormat.QR_CODE,400,400)
+        qrcode.setImageBitmap(bitmap)
+        id.text = sessionManager.getKunci()
+
+
+        textClose.setOnClickListener { dialog_bidding!!.dismiss() }
+        dialog_bidding!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog_bidding!!.show()
+    }
 
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.alfanshter.jatimpark.R
+import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.SinchService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,10 +19,11 @@ class WaitingCalling : AppCompatActivity() {
     private var mUserName: String? = null
     private var mCurrentId: String? = null
     private var mFirestore: FirebaseFirestore? = null
-
+lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_waiting_calling)
+        sessionManager = SessionManager(this)
            mFirestore = FirebaseFirestore.getInstance()
         mCurrentId = FirebaseAuth.getInstance().uid
         val notificationMessage: MutableMap<String, Any> =
@@ -33,7 +35,8 @@ class WaitingCalling : AppCompatActivity() {
             .add(notificationMessage).addOnSuccessListener {
                 panggilanProgress.visibility = View.INVISIBLE
                 toast("Request panggilan berhasil ")
-                Appsc.sinchClient.isStarted
+                    Appsc.sinchClient.isStarted
+
                 startService<SinchService>()
             }.addOnFailureListener { e ->
                 toast("Request Gagal silahkan coba lagi ")

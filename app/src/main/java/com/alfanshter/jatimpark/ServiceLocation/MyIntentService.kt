@@ -32,7 +32,6 @@ class MyIntentService :
                     val userid = user.currentUser!!.uid
                     Utils.setLocationUpdatesResult(this, locations, session.toString(), userid)
                     Utils.useridbaru = "20"
-
                     Utils.sendNotification(this, Utils.getLocationResultTitle(this, locations))
                     Log.i(
                         TAG,

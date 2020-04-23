@@ -7,7 +7,7 @@ data class ModelSharing(
     val name:String,
     val latidude:Double,
     val longitude:Double,
-    val foto : String
+    val image : String
 
 ) {
     constructor() : this("", 0.00, 0.00,"")

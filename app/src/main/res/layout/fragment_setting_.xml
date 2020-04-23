@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Calling.Panggilan"
-    android:layout_marginTop="80dp"
+    tools:context=".ui.setting.Setting_Fragment"
+    android:layout_marginTop="50dp"
     >
 
-    <include layout="@layout/content_main" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listview"
+        >
 
+    </ListView>
 
 </RelativeLayout>

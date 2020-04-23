@@ -6,19 +6,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/sharerombongandua"
+    android:id="@+id/sharerombonganduaactivity"
+
 
     >
-
     <com.mapbox.mapboxsdk.maps.MapView
+        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:id="@+id/mapboxfamily"
-        mapbox:mapbox_cameraTargetLat="-7.818834"
-        mapbox:mapbox_cameraTargetLng="112.526830"
-        mapbox:mapbox_cameraZoom="12"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49"
+        android:id="@+id/mapviewshare"
+        mapbox:mapbox_cameraZoom = "16"
+        mapbox:mapbox_cameraBearing="34.33"
+        mapbox:mapbox_cameraTilt="50.25"
+        mapbox:mapbox_cameraZoomMin="6"
+        mapbox:mapbox_uiRotateGestures="false"
+        mapbox:mapbox_cameraTargetLat="-7.817648"
+        mapbox:mapbox_cameraTargetLng="112.524571"
+        >
+
+    </com.mapbox.mapboxsdk.maps.MapView>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,35 +46,36 @@
             />
 
     </LinearLayout>
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:text="keluar"
-        android:id="@+id/keluarshare"
+        android:id="@+id/keluar"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/keluar"
+        android:layout_marginBottom="100dp"
         />
 
-    <Button
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:text="Lihat User"
         android:id="@+id/viewuser"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/keluarshare"
-        android:layout_marginLeft="20dp"
+        android:src="@drawable/lihat"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="150dp"
         />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/refresh"
+    <ImageView
+        android:id="@+id/home"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="refresh"
+        android:src="@drawable/homebaru"
         />
-
 
 </RelativeLayout>

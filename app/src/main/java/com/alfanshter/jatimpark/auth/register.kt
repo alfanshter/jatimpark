@@ -1,5 +1,6 @@
 package com.alfanshter.jatimpark.auth
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -35,13 +36,13 @@ class register : AppCompatActivity() {
     lateinit var databaseReference: DatabaseReference
     private var imageUri: Uri? = null
     private var myUrl = ""
-
+    lateinit var progressDialog : ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         imageUri = null
-
+        progressDialog = ProgressDialog(this)
         mStorage = FirebaseStorage.getInstance().reference.child("images")
         mAuth = FirebaseAuth.getInstance()
         mFirestore = FirebaseFirestore.getInstance()
@@ -66,16 +67,17 @@ class register : AppCompatActivity() {
 
     private fun daftar() {
         if (imageUri != null) {
+            progressDialog.setTitle("Tunggu...")
+            progressDialog.show()
             registerProgressBar.visibility = View.VISIBLE
             val email = email.text.toString().trim()
             val username = user.text.toString().trim()
             val password = pass.text.toString().trim()
-            val nomor = mob.text.toString().trim()
+
             val longitude  =  "112.926894"
             val latitude  = "-7.705582"
 
-            if (email.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty() && nomor.isNotEmpty()) {
-
+            if (email.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()) {
                 mAuth!!.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -105,8 +107,6 @@ class register : AppCompatActivity() {
                                     userMap["name"] = email
                                     userMap["image"] = myUrl
                                     userMap["token_id"] = token_id
-                                    userMap["telepon"] = nomor
-                                    userMap["notelp"] = nomor
                                     userMap["password"] = password
                                     userMap["nama"] = username
                                     userMap["longitude"] = longitude
@@ -119,6 +119,7 @@ class register : AppCompatActivity() {
                                             registerProgressBar.visibility = View.INVISIBLE
                                             sendToMain()
                                         }.addOnFailureListener { e ->
+                                            progressDialog.dismiss()
                                             Toast.makeText(
                                                 this@register,
                                                 "Error : " + e.message,
@@ -127,6 +128,7 @@ class register : AppCompatActivity() {
                                             registerProgressBar.visibility = View.INVISIBLE
                                         }
                                 } else {
+                                    progressDialog.dismiss()
                                     Toast.makeText(
                                         this@register,
                                         "Error : " + uploadTask.exception!!.message,
@@ -138,6 +140,7 @@ class register : AppCompatActivity() {
 
 
                         } else {
+                            progressDialog.dismiss()
                             Toast.makeText(
                                 this@register,
                                 "Error : " + task.exception!!.message,

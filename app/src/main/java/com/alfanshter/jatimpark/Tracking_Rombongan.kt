@@ -7,14 +7,18 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.alfanshter.jatimpark.Activity.InfoPembuat
+import com.alfanshter.jatimpark.Model.ModelUsers
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.auth.Login
 import com.alfanshter.jatimpark.ui.Calling.Calling
 import com.alfanshter.jatimpark.ui.Tracking.TrackingFragment
 import com.alfanshter.jatimpark.ui.dashboard.DashboardFragment
 import com.alfanshter.jatimpark.ui.generate.GenerateCode
+import com.alfanshter.jatimpark.ui.setting.Setting_Fragment
 import com.alfanshter.jatimpark.ui.shareRombongan.ShareRombongan
 import com.alfanshter.jatimpark.ui.shareRombongan.Sharerombongandua
+import com.alfanshter.jatimpark.ui.shareRombongan.listuser.UsersFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -22,10 +26,10 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_tracking__rombongan.*
 import kotlinx.android.synthetic.main.drawer_header.*
 import org.jetbrains.anko.startActivity
@@ -34,13 +38,7 @@ import java.util.*
 class Tracking_Rombongan : AppCompatActivity() {
     val PERMISSIONS_REQUEST = 1
 
-    lateinit var locationRequest: LocationRequest
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var mAuth: FirebaseAuth? = null
-    var latAwal:Double? = null
-    var lonAwal:Double? = null
-    var latAkhir:Double? = null
-    var lonAkhir:Double? = null
 
     private lateinit var auth: FirebaseAuth
     lateinit var user: FirebaseUser
@@ -50,7 +48,6 @@ class Tracking_Rombongan : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
     private var mFirestore: FirebaseFirestore? = null
     private var mUserId: String? = null
-    private val REQUEST_CODE_PERMISSIONS = 101
 
     var namaprofil = ""
     var emailprofil = ""
@@ -82,30 +79,6 @@ class Tracking_Rombongan : AppCompatActivity() {
         }
         false
     }
-    //Start the TrackerService//
-//    private fun startTrackerService() {
-//        startService(Intent(this, ServiceTracking::class.java))
-//        //Notify the user that tracking has been enabled//
-//        Toast.makeText(this, "GPS tracking enabled", Toast.LENGTH_SHORT).show()
-//        //Close MainActivity//
-//    }
-
-
-//    companion object{
-//        var instance:Tracking_Rombongan?=null
-//
-//        fun getMainInstance():Tracking_Rombongan{
-//            return instance!!
-//        }
-//    }
-//
-//    fun updateTextView(value:String)
-//    {
-//        this@Tracking_Rombongan.runOnUiThread{
-//            txt_location.text = value
-//
-//        }
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -118,48 +91,31 @@ class Tracking_Rombongan : AppCompatActivity() {
     sessionManager.setTelfon("hayo")
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
-        actionBar?.title = "Hello Toolbar"
+        actionBar?.title = "Selecta"
 
         auth = FirebaseAuth.getInstance()
         mFirestore = FirebaseFirestore.getInstance()
-        mUserId = mAuth!!.currentUser!!.uid
+        mUserId = auth.currentUser!!.uid
+        //upload info
+        referencebaru = FirebaseDatabase.getInstance().reference.child("Selecta").child("Users").child(mUserId.toString())
+        referencebaru.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+            override fun onDataChange(p0: DataSnapshot) {
+                    var ambildata = p0.getValue(ModelUsers::class.java)
+                    namaprofil = ambildata!!.nama.toString()
+                    emailprofil = ambildata.email.toString()
+                    gambarprofil = ambildata.image.toString()
 
-
-
-        mFirestore!!.collection("Users").document(mUserId!!).get()
-            .addOnSuccessListener { documentSnapshot ->
-                val user_email = documentSnapshot.getString("name")
-                val user_image = documentSnapshot.getString("image")
-                val user_nama = documentSnapshot.getString("nama")
-                nama_drawer.text = user_email
-                email_drawer.text = user_nama
-                sessionManager.setprofil(user_nama.toString())
                 val placeholderOption =
                     RequestOptions()
-                placeholderOption.placeholder(R.drawable.username)
-                Glide.with(container.context).setDefaultRequestOptions(placeholderOption)
-                    .load(user_image).into(gambardrawer)
-                sessionManager.setFoto(user_image.toString())
-            }
-
-
-        //upload info
-        referencebaru = FirebaseDatabase.getInstance().reference.child("Selecta").child("Users")
-        /*referencebaru.addValueEventListener(object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-            namaprofil = p0.child(auth.uid.toString()+"/nama").value.toString()
-                gambarprofil = p0.child(auth.uid.toString()+"/gambar").value.toString()
-                emailprofil = p0.child(auth.uid.toString()+"/email").value.toString()
                 nama_drawer.text = namaprofil
-                Picasso.get().load(gambarprofil)
-                    .into(gambardrawer)
+                Glide.with(container.context).setDefaultRequestOptions(placeholderOption).load(gambarprofil).into(gambardrawer)
                 email_drawer.text = emailprofil
+                sessionManager.setFoto(ambildata.image.toString())
+                sessionManager.setprofil(ambildata.nama.toString())
             }
-        })*/
+        })
         //========
 
         val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
@@ -178,10 +134,6 @@ class Tracking_Rombongan : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener{
             when (it.itemId) {
-                R.id.navigation_generate -> {
-                    mainPresenter.changeFragment(supportFragmentManager,
-                        GenerateCode(),R.id.nav_host_fragment)
-                }
                 R.id.nav_logout -> {
 
                     val tokenMapRemove: MutableMap<String, Any> =
@@ -200,6 +152,21 @@ class Tracking_Rombongan : AppCompatActivity() {
                         }
 
                 }
+
+                R.id.settings -> {
+                    mainPresenter.changeFragment(supportFragmentManager,
+                        Setting_Fragment(),R.id.nav_host_fragment)
+
+                }
+
+                R.id.info_drawable -> {
+                   startActivity<InfoPembuat>()
+
+                }
+
+
+
+
             }
             container.closeDrawer(GravityCompat.START)
             true
@@ -210,12 +177,14 @@ class Tracking_Rombongan : AppCompatActivity() {
             DashboardFragment(),R.id.nav_host_fragment)
         nav_view.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
+        if (sessionManager.getviewuser().equals("1"))
+        {
+            mainPresenter.changeFragment(supportFragmentManager,
+                UsersFragment(),R.id.nav_host_fragment)
+        }
+        sessionManager.setviewuser("")
     }
-/*
-    private fun startTrackerService() {
-        startService(Intent(this, TrackerService::class.java))
-        finish()
-    }*/
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -225,7 +194,6 @@ class Tracking_Rombongan : AppCompatActivity() {
         if ((requestCode == PERMISSIONS_REQUEST && grantResults.size == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED))
         {
-//             startTrackerService()
         }
         else
         {

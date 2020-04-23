@@ -133,6 +133,34 @@ class SessionManager(private val context: Context ?) {
     }
 
 
+    private val qrcode = "qrcode"
+    fun setQrcode(telfon:String?){
+        editor?.putString(qrcode, qrcode)
+        editor?.commit()
+    }
+    fun getQrcode():String?{
+        return Pref?.getString(qrcode,"")
+    }
+
+
+    private val id_Setting = "id_Setting"
+    fun setSetting(id_Settings:String?){
+        editor?.putString(id_Setting, id_Settings)
+        editor?.commit()
+    }
+    fun getSetting():String?{
+        return Pref?.getString(id_Setting,"")
+    }
+
+
+    private val id_Viewuser = "id_Viewuser"
+    fun setviewuser(id_viewuser:String?){
+        editor?.putString(id_Viewuser, id_viewuser)
+        editor?.commit()
+    }
+    fun getviewuser():String?{
+        return Pref?.getString(id_Viewuser,"")
+    }
 
 
 

@@ -19,10 +19,11 @@
         android:background="@color/blue_btn_bg_color"
 >
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/toilet"
             android:id="@+id/gambarview"
+            android:layout_gravity="center_horizontal"
             />
         <TextView
             android:id="@+id/marker_window_title"

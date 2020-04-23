@@ -1,71 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapbox"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:layout_marginTop="50dp"
-        mapbox:mapbox_cameraZoom = "18"
+        android:layout_height="match_parent"
+        mapbox:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:mapbox_cameraBearing="34.33"
         mapbox:mapbox_cameraTilt="50.25"
+        mapbox:mapbox_cameraZoom="18"
         mapbox:mapbox_cameraZoomMin="3"
-        android:id="@+id/mapbox"
-        mapbox:mapbox_uiRotateGestures="false"
-        />
+        mapbox:mapbox_uiRotateGestures="false" />
 
     <TextView
+        android:id="@+id/lokasibaru"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lokasibaru"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_marginBottom="31dp"
+        mapbox:layout_constraintBottom_toTopOf="@+id/mapbox"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/toilet"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="70dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/track5"
-        />
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintHorizontal_bias="0.04"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
+        mapbox:layout_constraintVertical_bias="0.110000014" />
 
     <ImageView
-        android:id="@+id/toiletdua"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/track5"
-        android:layout_below="@id/toilet"
-        />
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/track7"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="450dp"
         android:id="@+id/navigasi"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/track7"
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintHorizontal_bias="0.92"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
+        mapbox:layout_constraintVertical_bias="0.68" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/mapbox"
+        android:layout_height="150dp"
         android:background="@drawable/track1"
-        >
+        mapbox:layout_constraintBottom_toBottomOf="parent"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintStart_toStartOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent"
+        mapbox:layout_constraintVertical_bias="1.0">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_on_top_of_map"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginTop="-30dp" />
+            android:layout_gravity="bottom" />
 
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

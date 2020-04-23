@@ -4,7 +4,7 @@ data class ModelBaru(
     val nama:String,
     val latidude:Double,
     val longitude:Double,
-    val foto:String
+    val image:String
 
 
 ) {

@@ -7,6 +7,8 @@ import android.util.Log
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.Utils.Utils
 import com.google.android.gms.location.LocationResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class MyReceiver: BroadcastReceiver() {
     lateinit var sessionManager: SessionManager
@@ -17,14 +19,24 @@ class MyReceiver: BroadcastReceiver() {
                 val result = LocationResult.extractResult(intent)
 
                 if (result != null) {
+                    sessionManager = SessionManager(context)
+                    val user = FirebaseAuth.getInstance()
+                    val UserID = user.currentUser!!.uid
 
                     val string = ""
                     val locations =
                         result.locations
-                    val userid =""
-
+                    val userid=""
+                    val usermap : MutableMap<String,Any?> = HashMap()
+                    usermap["image"] = sessionManager.getFoto().toString()
+                    usermap["latidude"] = result.lastLocation.latitude
+                    usermap["longitude"] = result.lastLocation.longitude
+                    usermap["name"] = sessionManager.getprofil().toString()
                     Utils.setLocationUpdatesResult(context, locations,string,userid)
 
+                    var reference = FirebaseDatabase.getInstance().reference.child("Selecta").child("sharing")
+                        .child(sessionManager.getKunci().toString()).child(UserID)
+                    reference.updateChildren(usermap)
                     Utils.sendNotification(
                         context,
                         Utils.getLocationResultTitle(context, locations)

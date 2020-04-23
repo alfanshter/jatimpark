@@ -2,17 +2,21 @@
 
 package com.alfanshter.jatimpark.ui.shareRombongan
 
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Base64
+import android.util.Base64.encodeToString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alfanshter.jatimpark.Model.ModelBaru
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
+import com.alfanshter.jatimpark.Utils.Utils
 import com.goodiebag.pinview.Pinview
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -24,14 +28,22 @@ import kotlinx.android.synthetic.main.share_rombongan_fragment.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import java.lang.Exception
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class ShareRombongan : Fragment(),  AnkoLogger{
 
+    companion object{
+        var stream = ByteArrayOutputStream()
+        lateinit var byteArray: ByteArray
+        var kode =""
+        var nama=""
+        var gambar=""
+    }
     private lateinit var viewModel: ShareRombonganViewModel
     lateinit var user: FirebaseUser
     lateinit var userID: String
@@ -54,7 +66,7 @@ class ShareRombongan : Fragment(),  AnkoLogger{
     var nama = ""
     lateinit var reference: DatabaseReference
     lateinit var referencebaru: DatabaseReference
-
+ var alfan : Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -99,24 +111,32 @@ class ShareRombongan : Fragment(),  AnkoLogger{
                         info("informasi : ${it.key}")
                         if (it.key.toString().equals(pinjoin)) {
                             sessionManager.setKunci(pin.value.toString())
+                            kode = pin.value.toString()
                             sessionManager.setIDStatusUser("1")
-                            val fr = fragmentManager?.beginTransaction()
+                            Utils.sessionmaanager(kode)
+                        /*    val fr = fragmentManager?.beginTransaction()
                             fr?.replace(R.id.nav_host_fragment,Sharerombongandua())
                             fr?.commit()
+                       */
+                        alfan = 1
                         }
                     }
                 }
             })
-
+            if (alfan==1)
+            {
+                startActivity<ShareRombonganduaactivity>()
+                alfan =0
+            }
         }
 
         if (sessionManager.getIDStatusUser().equals("1"))
         {
-            val fr = fragmentManager?.beginTransaction()
-            fr?.replace(R.id.nav_host_fragment,Sharerombongandua())
-            fr?.commit()
+            startActivity<ShareRombonganduaactivity>()
         }
 
+        ShareRombongan.nama = sessionManager.getprofil().toString()
+        ShareRombongan.gambar = sessionManager.getFoto().toString()
 
         return root
     }
@@ -136,14 +156,13 @@ class ShareRombongan : Fragment(),  AnkoLogger{
                     val text = code
                     user = auth.currentUser!!
                     userID = user.uid
-                    reference = FirebaseDatabase.getInstance().reference.child("Selecta/Users")
+                    reference = FirebaseDatabase.getInstance().reference.child("Selecta/KeyRombongan")
                     referencebaru = FirebaseDatabase.getInstance().reference.child("Selecta")
                     val barcodeEndocer = BarcodeEncoder()
                     val bitmap = barcodeEndocer.encodeBitmap(text, BarcodeFormat.QR_CODE,400,400)
                     qrcode.setImageBitmap(bitmap)
                     pin.value = text
-                    reference.child(userID).child("key").setValue(code)
-                    reference.child(userID).child("date").setValue(date)
+                    reference.push().child("kode").setValue(code)
                     referencebaru.child("sharing").child(code).child(userID).setValue(ModelBaru("", -7.817527,    112.524507,"https://cdn0-production-images-kly.akamaized.net/RxUo9GGJA_1oDBlykD64OHEuVVg=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/2396228/original/055603500_1540900672-lion-3040797_1920.jpg"))
 
                         .addOnCompleteListener { task ->

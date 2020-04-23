@@ -39,10 +39,12 @@
                 android:text="VIEW ALL"
                 android:textColor="#dd3e3e"/>
         </LinearLayout>
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rvMain"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+        <com.glide.slider.library.SliderLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/slider">
+
+        </com.glide.slider.library.SliderLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

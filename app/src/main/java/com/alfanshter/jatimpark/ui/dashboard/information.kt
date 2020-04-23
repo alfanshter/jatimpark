@@ -16,6 +16,7 @@ class information : AppCompatActivity() {
         val image = bundle!!.getString("Firebase_Image")
         val title = bundle.getString("Firebase_title")
         var isi = bundle.getString("Firebase_isi")
+
         textinfo.setText(title)
         textisi.setText(isi)
         Picasso.get().load(image).into(gambarinfo)

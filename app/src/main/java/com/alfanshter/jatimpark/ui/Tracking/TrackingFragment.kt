@@ -22,7 +22,10 @@ import androidx.annotation.NonNull
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +43,7 @@ import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.Mapbox.getApplicationContext
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -94,24 +98,52 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
     private lateinit var mapboxMap: MapboxMap
     private lateinit var startnavigasi: Button
     lateinit var locationComponent: LocationComponent
+
     //variabel menggambar rute
     private var currentRoute: DirectionsRoute? = null
     private var navigationMapRoute: NavigationMapRoute? = null
+
     //=====================
     private var navigationView: NavigationView? = null
-    var origin = Point.fromLngLat( 112.5265,-7.8196)
+    var origin = Point.fromLngLat(112.5265, -7.8196)
 
 
     private val ID_IMAGE_SOURCE = "animated_image_source"
     private val ID_IMAGE_SOURCEdua = "animated_image_source2"
+
     private val ID_IMAGE_LAYER = "animated_image_layer"
     private val ID_IMAGE_LAYERdua = "animated_image_layer2"
+
+    //variabel restoran
+    private val ID_SOURCE_Restoran = "source_restoran"
+    private val ID_IMAGE_Restoran = "layer_restoran"
+
+    //variabel kolamdewasa
+    private val ID_SOURCE_PoolDewasa = "source_pool"
+    private val ID_LAYER_PoolDewasa = "layer_pool"
+
+    //variabel kamarganti
+    private val ID_SOURCE_KamarGanti = "source_kmrganti"
+    private val ID_LAYER_KamarGanti = "layer_kmrganti"
+
+    //variabel restoranasri
+    private val ID_SOURCE_RestoranAsri = "source_restoranasri"
+    private val ID_LAYER_RestoranAsri = "layer_restoranasri"
+
+    //variabel cienam
+    private val ID_SOURCE_Cinema = "source_cinema"
+    private val ID_LAYER_Cinema = "layer_cinema"
+    //variabel RestoranSederhana
+    private val ID_SOURCE_RestoranSederhana = "source_RestoranSederhana"
+    private val ID_LAYER_RestoranSederhana = "layer_RestoranSederhana"
+
+
 
     private var locationEngine: LocationEngine? = null
     private val DEFAULT_INTERVAL_IN_MILLISECONDS = 1000L
     private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
-    lateinit var butonnavigasi : ImageView
-    lateinit var toilet : ImageView
+    lateinit var butonnavigasi: ImageView
+    lateinit var toilet: ImageView
     private var callback = MainActivityLocationCallback(this)
 
     var lastlatitude: String? = null
@@ -133,15 +165,23 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         "Taman Bunga",
         "Sepeda Air",
         "Menunggang Kuda"
-        )
+    )
 
-    private val gambarrecycler = intArrayOf(R.drawable.selectasatu,R.drawable.selectadua,R.drawable.selectatiga,R.drawable.selectaempat,R.drawable.bannerdua,R.drawable.bannerbaru)
+    private val gambarrecycler = intArrayOf(
+        R.drawable.selectasatu,
+        R.drawable.selectadua,
+        R.drawable.selectatiga,
+        R.drawable.selectaempat,
+        R.drawable.bannerdua,
+        R.drawable.bannerbaru
+    )
 
     private val SYMBOL_ICON_ID = "SYMBOL_ICON_ID"
     private val SOURCE_ID = "SOURCE_ID"
     private val LAYER_ID = "LAYER_ID"
     private var featureCollection: FeatureCollection? = null
     lateinit var recyclerView: RecyclerView
+
     //====================================================================
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -163,7 +203,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         recyclerView = view.find(R.id.rv_on_top_of_map)
 
         toilet.setOnClickListener {
-            val selectedLocationLatLng= LatLng(-7.817648, 112.524571)
+            val selectedLocationLatLng = LatLng(-7.817648, 112.524571)
             val newCameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(selectedLocationLatLng)
                 .build()
@@ -192,11 +232,16 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(
 
-            Style.Builder().fromUri(Style.LIGHT) // Set up the image, source, and layer for the person icon,
+            Style.Builder()
+                .fromUri(Style.LIGHT) // Set up the image, source, and layer for the person icon,
 // which is where all of the routes will start from
         ) {
 
+            mapboxMap.addMarker(
+                MarkerOptions().position(LatLng(-7.817540, 112.525251))
+                    .title("musholla")
 
+            )
 
             // Set the latitude and longitude values for the image's four corners
             val quad = LatLngQuad(
@@ -205,16 +250,92 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
                 LatLng(-7.817399, 112.525500),
                 LatLng(-7.817588, 112.525624)
             )
+
             val kolamanak = LatLngQuad(
                 LatLng(-7.81818, 112.52519),
                 LatLng(-7.81812, 112.52536),
                 LatLng(-7.81786, 112.52517),
                 LatLng(-7.81790, 112.52506)
             )
+
+            val restoran = LatLngQuad(
+                LatLng(-7.818378, 112.525175),
+                LatLng(-7.818515, 112.525235),
+                LatLng(-7.818564, 112.525129),
+                LatLng(-7.818416, 112.525073)
+
+
+            )
+
+            val pooldewasa = LatLngQuad(
+                LatLng(-7.818183, 112.525362),
+                LatLng(-7.818494, 112.525534),
+                LatLng(-7.818558, 112.525436),
+                LatLng(-7.818241, 112.525266)
+
+            )
+
+            val kamarganti = LatLngQuad(
+                LatLng(-7.818159, 112.525160),
+                LatLng(-7.818094, 112.525275),
+                LatLng(-7.818147, 112.525306),
+                LatLng(-7.818211, 112.525189)
+
+            )
+            val restoranasri = LatLngQuad(
+                LatLng(-7.818006, 112.525548),
+                LatLng(-7.818185, 112.525663),
+                LatLng(-7.818254, 112.525527),
+                LatLng(-7.818090, 112.525432)
+
+            )
+
+            val cinema = LatLngQuad(
+                LatLng(-7.819043, 112.525304),
+                LatLng(-7.818888, 112.525524),
+                LatLng(-7.818992, 112.525580),
+                LatLng(-7.819135, 112.525359)
+
+            )
+
+            val restoransederhana = LatLngQuad(
+                LatLng(-7.817520, 112.525263),
+                LatLng(-7.817764, 112.525396),
+                LatLng(-7.817842, 112.525246),
+                LatLng(-7.817607, 112.525123)
+
+            )
+
+
+
             it.addSource(ImageSource(ID_IMAGE_SOURCE, quad, R.drawable.selecta))
             it.addSource(ImageSource(ID_IMAGE_SOURCEdua, kolamanak, R.drawable.pool))
             it.addLayer(RasterLayer(ID_IMAGE_LAYER, ID_IMAGE_SOURCE))
             it.addLayer(RasterLayer(ID_IMAGE_LAYERdua, ID_IMAGE_SOURCEdua))
+
+            //gambar restoran
+            it.addSource(ImageSource(ID_SOURCE_Restoran, restoran, R.drawable.restaurant))
+            it.addLayer(RasterLayer(ID_IMAGE_Restoran, ID_SOURCE_Restoran))
+            //gambar kolamdewasa
+            it.addSource(ImageSource(ID_SOURCE_PoolDewasa, pooldewasa, R.drawable.pooldewasa))
+            it.addLayer(RasterLayer(ID_LAYER_PoolDewasa, ID_SOURCE_PoolDewasa))
+            //gambar kamarganti
+            it.addSource(ImageSource(ID_SOURCE_KamarGanti, kamarganti, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_KamarGanti, ID_SOURCE_KamarGanti))
+            //gambar Restoranasri
+            it.addSource(ImageSource(ID_SOURCE_RestoranAsri, restoranasri, R.drawable.restoranasri))
+            it.addLayer(RasterLayer(ID_LAYER_RestoranAsri, ID_SOURCE_RestoranAsri))
+            //gambar cinema
+            it.addSource(ImageSource(ID_SOURCE_Cinema, cinema, R.drawable.cinema))
+            it.addLayer(RasterLayer(ID_LAYER_Cinema, ID_SOURCE_Cinema))
+            //gambar RestoranSederhana
+            it.addSource(ImageSource(ID_SOURCE_RestoranSederhana, restoransederhana, R.drawable.restoranasri))
+            it.addLayer(RasterLayer(ID_LAYER_RestoranSederhana, ID_SOURCE_RestoranSederhana))
+
+
+
+
+
             LoadGeoJson(this).execute()
             enableLocationComponent(it)
             addDestinationIconSymbolLayer(it)
@@ -223,11 +344,9 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             initRecyclerView()
             mapboxMap.addOnMapClickListener(this)
 
-
         }
 
     }
-
 
 
     //==========RecyclerVIew===========
@@ -255,29 +374,37 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             createRecyclerViewLocations(),
             mapboxMap
         )
-        recyclerView.setLayoutManager(LinearLayoutManager(getApplicationContext(),
-            LinearLayoutManager.HORIZONTAL, true))
+        recyclerView.setLayoutManager(
+            LinearLayoutManager(
+                getApplicationContext(),
+                LinearLayoutManager.HORIZONTAL, true
+            )
+        )
         recyclerView.setItemAnimator(DefaultItemAnimator())
         recyclerView.setAdapter(locationAdapter)
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun initMarkerIcons(@NonNull loadedMapStyle:Style) {
-        loadedMapStyle.addImage(SYMBOL_ICON_ID, BitmapFactory.decodeResource(
-            this.resources, R.drawable.red_marker))
+    private fun initMarkerIcons(@NonNull loadedMapStyle: Style) {
+        loadedMapStyle.addImage(
+            SYMBOL_ICON_ID, BitmapFactory.decodeResource(
+                this.resources, R.drawable.red_marker
+            )
+        )
         loadedMapStyle.addSource(GeoJsonSource(SOURCE_ID, featureCollection))
-        loadedMapStyle.addLayer(SymbolLayer(LAYER_ID, SOURCE_ID).withProperties(
-            iconImage(SYMBOL_ICON_ID),
-            iconAllowOverlap(true),
-            iconSize(0.5f)
-        ))
+        loadedMapStyle.addLayer(
+            SymbolLayer(LAYER_ID, SOURCE_ID).withProperties(
+                iconImage(SYMBOL_ICON_ID),
+                iconAllowOverlap(true),
+                iconSize(0.2f)
+            )
+        )
     }
 
-    private fun createRecyclerViewLocations():List<SingleRecyclerViewLocation> {
-        var locationList:ArrayList<SingleRecyclerViewLocation> = ArrayList()
-        for (x in coordinates.indices)
-        {
+    private fun createRecyclerViewLocations(): List<SingleRecyclerViewLocation> {
+        var locationList: ArrayList<SingleRecyclerViewLocation> = ArrayList()
+        for (x in coordinates.indices) {
             val singleLocation = SingleRecyclerViewLocation()
             singleLocation.setName(namalayout[x])
             singleLocation.setGambar(gambarrecycler[x])
@@ -286,8 +413,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         }
         return locationList
     }
-
-
 
 
     //==============================
@@ -351,8 +476,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
     ) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
-
 
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
@@ -450,9 +573,9 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
                                 PropertyFactory.lineOpacity(
                                     .5f
                                 ),
-                                PropertyFactory.lineWidth(5f),
+                                PropertyFactory.lineWidth(1f),
                                 PropertyFactory.lineColor(
-                                    Color.parseColor("#3bb2d0")
+                                    Color.parseColor("#34b0d0")
                                 )
                             )
                     )
@@ -647,14 +770,15 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             return locationList.size
         }
 
-        internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+        internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view),
+            View.OnClickListener {
             var name: TextView
             var singleCard: CardView
-            var gambar : ImageView
+            var gambar: ImageView
             private var clickListener: ItemClickListener? = null
             fun setClickListener(itemClickListener: ItemClickListener?) {
                 clickListener = itemClickListener
-                Toast.makeText(getApplicationContext(),"doremi",Toast.LENGTH_SHORT).show()
+                Toast.makeText(getApplicationContext(), "doremi", Toast.LENGTH_SHORT).show()
             }
 
             override fun onClick(view: View?) {
@@ -673,6 +797,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             this.locationList = locationList
             map = mapBoxMap
         }
+
         interface ItemClickListener {
             fun onClick(view: View?, position: Int)
         }
