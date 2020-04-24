@@ -37,6 +37,7 @@ class MyReceiver: BroadcastReceiver() {
                     var reference = FirebaseDatabase.getInstance().reference.child("Selecta").child("sharing")
                         .child(sessionManager.getKunci().toString()).child(UserID)
                     reference.updateChildren(usermap)
+/*
                     Utils.sendNotification(
                         context,
                         Utils.getLocationResultTitle(context, locations)
@@ -45,6 +46,7 @@ class MyReceiver: BroadcastReceiver() {
                         TAG,
                         Utils.getLocationUpdatesResult(context)
                     )
+*/
                 }
             }
         }

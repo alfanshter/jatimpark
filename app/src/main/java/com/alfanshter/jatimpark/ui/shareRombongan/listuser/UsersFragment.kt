@@ -32,14 +32,11 @@ class UsersFragment : Fragment(),AnkoLogger {
     private var usersRecyclerAdapter: UsersRecyclerAdapter? = null
 
     private var mFirestore: FirebaseFirestore? = null
-    private var ambildata: FirebaseFirestore? = null
     private lateinit var sessionManager: SessionManager
 
     var nama = ""
     var image =""
     var status = false
-    fun UsersFragment() { // Required empty public constructor
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,7 +111,7 @@ class UsersFragment : Fragment(),AnkoLogger {
     override fun onStart() {
         super.onStart()
 
-  usersList.clear()
+        usersList.clear()
         val auth = FirebaseAuth.getInstance()
         val userID = auth.currentUser!!.uid
         mFirestore!!.collection("Sharing").document(sessionManager.getKunci().toString()).collection("share").addSnapshotListener(

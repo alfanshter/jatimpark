@@ -3,10 +3,13 @@ package com.alfanshter.jatimpark.ui.shareRombongan
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -21,20 +24,29 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.jatimpark.Model.ModelSharing
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.ServiceLocation.MyReceiver
 import com.alfanshter.jatimpark.Session.SessionManager
 import com.alfanshter.jatimpark.Tracking_Rombongan
 import com.alfanshter.jatimpark.Utils.Utils
+import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Adapter.UsersRecyclerAdapter
+import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Model.Users
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.BuildConfig
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -56,6 +68,7 @@ import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlinx.android.synthetic.main.fragment_sharerombongandua.btn_qrcode as btn_qrcode1
 
 class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCallback,
     PermissionsListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -92,12 +105,31 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
     companion object {
         lateinit var nilaikode: String
     }
+    var dialog_bidding: Dialog? = null
 
 
+    //punya Lihat USer
+    lateinit var usersList: MutableList<Users>
+    private var usersRecyclerAdapter: UsersRecyclerAdapter? = null
+
+    private var mFirestore: FirebaseFirestore? = null
+    var nama = ""
+    var image =""
+    var status = false
+
+    //======================
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Mapbox.getInstance(this, getString(R.string.access_token))
         setContentView(R.layout.activity_share_rombonganduaactivity)
+
+        rombongandualayout.visibility = View.VISIBLE
+        layoutuserr.visibility = View.INVISIBLE
+        //show  pop up
+        dialog_bidding = Dialog(this)
+        dialog_bidding!!.setContentView(R.layout.popupqrcode)
+        //============
+
         if (!checkPermissions()) {
 //            requestPermissions()
         }
@@ -116,10 +148,23 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
         userID = user.uid
         val db = FirebaseFirestore.getInstance()
 
+        getdataview()
+        usersya()
         home.setOnClickListener {
             startActivity<Tracking_Rombongan>()
         }
 
+
+        viewuserbaru.setOnClickListener {
+            rombongandualayout.visibility = View.INVISIBLE
+            layoutuserr.visibility = View.VISIBLE
+        }
+
+        back.setOnClickListener {
+            rombongandualayout.visibility = View.VISIBLE
+            layoutuserr.visibility = View.INVISIBLE
+
+        }
         keluar.setOnClickListener {
             statusupdate = 1
             Utils.setRequestingLocationUpdates(this, false)
@@ -135,6 +180,10 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
                 .delete()
             startActivity<Tracking_Rombongan>()
 
+        }
+
+        btn_qrcode.setOnClickListener {
+            showpopup()
         }
 
 
@@ -224,6 +273,25 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
             .registerOnSharedPreferenceChangeListener(this)
 
         mapviewshare.onStart()
+
+        usersList.clear()
+        val auth = FirebaseAuth.getInstance()
+        val userID = auth.currentUser!!.uid
+        mFirestore!!.collection("Sharing").document(sessionManager.getKunci().toString()).collection("share").addSnapshotListener(
+            this,
+            object : EventListener<QuerySnapshot> {
+
+                override fun onEvent(documentSnapshots: QuerySnapshot?, e: FirebaseFirestoreException?) {
+                    for (doc in documentSnapshots!!.documentChanges) {
+                        if (doc.type == DocumentChange.Type.ADDED) {
+                            val user_id = doc.document.id
+                            val users: Users = doc.document.toObject(Users::class.java).withId(user_id)
+                            usersList.add(users)
+                            usersRecyclerAdapter!!.notifyDataSetChanged()
+                        }
+                    }
+                }
+            })
     }
 
     override fun onResume() {
@@ -478,5 +546,87 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 
     }
+
+    fun showpopup(){
+        val textClose: TextView
+        val qrcode: ImageView
+        val id: TextView
+
+        qrcode = dialog_bidding!!.findViewById(R.id.img_qrcode)
+        textClose = dialog_bidding!!.findViewById(R.id.txtclose)
+        id = dialog_bidding!!.findViewById(R.id.txt_popup)
+
+        val gambar = sessionManager.getKunci()
+        val barcodeEndocer = BarcodeEncoder()
+        val bitmap = barcodeEndocer.encodeBitmap(gambar, BarcodeFormat.QR_CODE,400,400)
+        qrcode.setImageBitmap(bitmap)
+        id.text = sessionManager.getKunci()
+
+
+        textClose.setOnClickListener { dialog_bidding!!.dismiss() }
+        dialog_bidding!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog_bidding!!.show()
+    }
+
+    var namadata =""
+    var imagedata =""
+    var tokeniddata =""
+
+    fun usersya()
+    {
+        mFirestore = FirebaseFirestore.getInstance()
+        usersList = ArrayList()
+        usersRecyclerAdapter = UsersRecyclerAdapter(this,
+            usersList
+        )
+
+        viewuserrecycler.setHasFixedSize(true)
+        viewuserrecycler.layoutManager = LinearLayoutManager(this)
+        viewuserrecycler.adapter = usersRecyclerAdapter
+
+    }
+    
+    fun getdataview()
+    {
+        val auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser!!.uid
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("Users").document(uid).get()
+            .addOnSuccessListener(object : OnSuccessListener<DocumentSnapshot> {
+                override fun onSuccess(p0: DocumentSnapshot?) {
+                    if (p0!!.exists()){
+                        var nama = p0.getString("nama")
+                        var image = p0.getString("image")
+                        var tokenid = p0.getString("token_id")
+                        namadata = nama.toString()
+                        imagedata = image.toString()
+                        tokeniddata = tokenid.toString()
+                        info { "hasil : ${namadata}" }
+                        upload()
+                    }
+                }
+
+            })
+
+
+        status = true
+    }
+
+    fun upload()
+    {
+        val auth = FirebaseAuth.getInstance()
+        val userID = auth.currentUser!!.uid
+        val db = FirebaseFirestore.getInstance()
+        val userMap: MutableMap<String, Any?> =
+            HashMap()
+        userMap["nama"] = namadata
+        userMap["image"]= imagedata
+        userMap["token_id"] = tokeniddata
+        info { "ngetes ${nama}"  }
+        db.collection("Sharing").document(sessionManager.getKunci().toString()).collection("share").document(userID).set(userMap)
+
+    }
+
 
 }
