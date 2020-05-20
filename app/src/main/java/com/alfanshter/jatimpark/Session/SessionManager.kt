@@ -124,8 +124,8 @@ class SessionManager(private val context: Context ?) {
 
 
     private val telfon = "telfon"
-    fun setTelfon(telfon:String?){
-        editor?.putString(telfon, telfon)
+    fun setTelfon(telfoncheck:String?){
+        editor?.putString(telfon, telfoncheck)
         editor?.commit()
     }
     fun getTelfon():String?{

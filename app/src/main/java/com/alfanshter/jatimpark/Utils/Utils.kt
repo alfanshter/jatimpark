@@ -165,10 +165,7 @@ internal object Utils : AppCompatActivity() {
             sb.append(location.longitude)
             sb.append(")")
             sb.append("\n")
-            val UserID = userid
             val auth  = FirebaseAuth.getInstance()
-            val userida = auth.currentUser!!.uid
-            val database = FirebaseDatabase.getInstance()
 
 /*
                 val myRef = database.getReference("Selecta").child("sharing").child(kode).child(userida)

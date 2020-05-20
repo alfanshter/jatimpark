@@ -1,32 +1,1359 @@
 {
   "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2020-05-01T07:04:02Z",
   "features": [
     {
       "type": "Feature",
       "properties": {
-        "name": "Crema to Council Crest"
+        "@id": "relation/10556731",
+        "name": "alsdf",
+        "network": "saldf",
+        "ref": "asdf",
+        "route": "road",
+        "type": "route",
+        "@timestamp": "2020-01-08T10:11:43Z",
+        "@version": "1",
+        "@changeset": "79333785",
+        "@user": "alfanshter",
+        "@uid": "10632390"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            112.524507,
-          -7.817527
+            112.5251465,
+            -7.8182425
           ],
           [
-           112.524016,
-           -7.816873
+            112.5251175,
+            -7.8181454
           ],
           [
-            112.524627,
-            -7.816617
-          ],
-          [
-          112.525818,
-          -7.818617
+            112.525025,
+            -7.8179063
           ]
         ]
-      }
+      },
+      "id": "relation/10556731"
+    },
+
+
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/545426102",
+        "leisure": "water_park",
+        "name": "kolam anak",
+        "@timestamp": "2020-01-21T04:47:59Z",
+        "@version": "3",
+        "@changeset": "79829914",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              112.5251062,
+              -7.8179253
+            ],
+            [
+              112.5251928,
+              -7.8181387
+            ],
+            [
+              112.5253189,
+              -7.8180731
+            ],
+            [
+              112.5252164,
+              -7.8178749
+            ],
+            [
+              112.5251062,
+              -7.8179253
+            ]
+          ]
+        ]
+      },
+      "id": "way/545426102"
+    },
+
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/545426021",
+        "highway": "service",
+        "@timestamp": "2020-04-27T10:54:25Z",
+        "@version": "7",
+        "@changeset": "84193514",
+        "@user": "PatioBonito",
+        "@uid": "10334789",
+        "@tainted": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5258404,
+            -7.8187633
+          ],
+          [
+            112.525835,
+            -7.818827
+          ],
+          [
+            112.5258779,
+            -7.8189121
+          ]
+        ]
+      },
+      "id": "way/545426021"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/545426037",
+        "highway": "service",
+        "@timestamp": "2019-07-31T06:21:52Z",
+        "@version": "6",
+        "@changeset": "72839552",
+        "@user": "udaykiran3",
+        "@uid": "7671560",
+        "@tainted": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.525607,
+            -7.8159359
+          ],
+          [
+            112.525607,
+            -7.8161272
+          ],
+          [
+            112.5256164,
+            -7.8162349
+          ],
+          [
+            112.5256446,
+            -7.8163
+          ],
+          [
+            112.5258685,
+            -7.8167025
+          ]
+        ]
+      },
+      "id": "way/545426037"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/709156985",
+        "highway": "service",
+        "@timestamp": "2020-01-23T23:46:54Z",
+        "@version": "5",
+        "@changeset": "80000213",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5247203,
+            -7.8167765
+          ],
+          [
+            112.5249919,
+            -7.8173125
+          ],
+          [
+            112.5250905,
+            -7.8175772
+          ],
+          [
+            112.5250773,
+            -7.8175927
+          ],
+          [
+            112.5249928,
+            -7.8176333
+          ],
+          [
+            112.5249271,
+            -7.8176698
+          ],
+          [
+            112.5248936,
+            -7.8176924
+          ],
+          [
+            112.5248869,
+            -7.8177176
+          ],
+          [
+            112.5248989,
+            -7.8177628
+          ],
+          [
+            112.5249633,
+            -7.8178106
+          ],
+          [
+            112.5249915,
+            -7.8178518
+          ],
+          [
+            112.525025,
+            -7.8179063
+          ],
+          [
+            112.5250465,
+            -7.8179594
+          ],
+          [
+            112.525076,
+            -7.8180325
+          ],
+          [
+            112.5251095,
+            -7.8181016
+          ],
+          [
+            112.5251175,
+            -7.8181454
+          ],
+          [
+            112.5251323,
+            -7.8182105
+          ],
+          [
+            112.5251465,
+            -7.8182425
+          ],
+          [
+            112.525201,
+            -7.818356
+          ],
+          [
+            112.525296,
+            -7.8185661
+          ],
+          [
+            112.525305,
+            -7.818586
+          ],
+          [
+            112.5253281,
+            -7.818637
+          ],
+          [
+            112.5253563,
+            -7.8186463
+          ],
+          [
+            112.5253871,
+            -7.818645
+          ],
+          [
+            112.5254582,
+            -7.818649
+          ],
+          [
+            112.525485,
+            -7.818641
+          ]
+        ]
+      },
+      "id": "way/709156985"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/709156986",
+        "highway": "service",
+        "@timestamp": "2019-07-31T07:24:12Z",
+        "@version": "1",
+        "@changeset": "72841537",
+        "@user": "udaykiran3",
+        "@uid": "7671560",
+        "@tainted": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.525485,
+            -7.818641
+          ],
+          [
+            112.525591,
+            -7.8185719
+          ],
+          [
+            112.5256379,
+            -7.8185547
+          ],
+          [
+            112.5256969,
+            -7.8185361
+          ],
+          [
+            112.5257626,
+            -7.81854
+          ],
+          [
+            112.5258096,
+            -7.8185427
+          ]
+        ]
+      },
+      "id": "way/709156986"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/761673411",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan",
+        "ref": "jalan ronaldikin",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-01-23T23:46:54Z",
+        "@version": "8",
+        "@changeset": "80000213",
+        "@user": "alfanshter",
+        "@uid": "10632390",
+        "@relations": [
+          {
+            "role": "",
+            "rel": "10556731",
+            "reltags": {
+              "name": "alsdf",
+              "network": "saldf",
+              "ref": "asdf",
+              "route": "road",
+              "type": "route"
+            }
+          }
+        ]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5251465,
+            -7.8182425
+          ],
+          [
+            112.5251175,
+            -7.8181454
+          ],
+          [
+            112.525025,
+            -7.8179063
+          ]
+        ]
+      },
+      "id": "way/761673411"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/765296156",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan kolam",
+        "ref": "jalan kolam dewasa",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-03-25T02:47:31Z",
+        "@version": "5",
+        "@changeset": "82594838",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.525201,
+            -7.818356
+          ],
+          [
+            112.5253185,
+            -7.8182866
+          ],
+          [
+            112.5252904,
+            -7.8182296
+          ],
+          [
+            112.525402,
+            -7.8181674
+          ],
+          [
+            112.5254188,
+            -7.8181581
+          ],
+          [
+            112.5254335,
+            -7.8181514
+          ],
+          [
+            112.5254843,
+            -7.8182535
+          ],
+          [
+            112.5255365,
+            -7.8183555
+          ],
+          [
+            112.525602,
+            -7.8184813
+          ],
+          [
+            112.5256379,
+            -7.8185547
+          ]
+        ]
+      },
+      "id": "way/765296156"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/765296157",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan masjid",
+        "ref": "jalan musholla",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-01-23T23:46:54Z",
+        "@version": "4",
+        "@changeset": "80000213",
+        "@user": "alfanshter",
+        "@uid": "10632390",
+        "@tainted": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5253281,
+            -7.818637
+          ],
+          [
+            112.5252677,
+            -7.8186734
+          ],
+          [
+            112.525253,
+            -7.8187171
+          ],
+          [
+            112.5252423,
+            -7.8187555
+          ],
+          [
+            112.5252209,
+            -7.8187913
+          ],
+          [
+            112.5252302,
+            -7.8189211
+          ]
+        ]
+      },
+      "id": "way/765296157"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/765296158",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan goa singa",
+        "ref": "jalan goa singa",
+        "surface": "ground",
+        "width": "1.5",
+        "@timestamp": "2020-01-23T23:46:54Z",
+        "@version": "4",
+        "@changeset": "80000213",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.525296,
+            -7.8185661
+          ],
+          [
+            112.525305,
+            -7.818586
+          ],
+          [
+            112.5252571,
+            -7.8186169
+          ],
+          [
+            112.5252336,
+            -7.8186197
+          ],
+          [
+            112.5252207,
+            -7.8186212
+          ],
+          [
+            112.5251931,
+            -7.8186385
+          ],
+          [
+            112.5251728,
+            -7.8186586
+          ],
+          [
+            112.5251597,
+            -7.8186399
+          ],
+          [
+            112.5251263,
+            -7.8186197
+          ],
+          [
+            112.5250856,
+            -7.8186097
+          ],
+          [
+            112.5250376,
+            -7.8185924
+          ],
+          [
+            112.5249824,
+            -7.8186514
+          ]
+        ]
+      },
+      "id": "way/765296158"
+    },
+
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272852",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan bianglala",
+        "ref": "jalan bianglala",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-04-30T08:29:12Z",
+        "@version": "1",
+        "@changeset": "84394901",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5250376,
+            -7.8185924
+          ],
+          [
+            112.5250341,
+            -7.8185051
+          ],
+          [
+            112.5248821,
+            -7.818281
+          ]
+        ]
+      },
+      "id": "way/798272852"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272853",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan bianglala",
+        "ref": "jalan bianglala",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-04-30T08:29:12Z",
+        "@version": "1",
+        "@changeset": "84394901",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5248821,
+            -7.818281
+          ],
+          [
+            112.5246324,
+            -7.8182079
+          ]
+        ]
+      },
+      "id": "way/798272853"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272854",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan ayun",
+        "ref": "jalan ayunn",
+        "surface": "paved",
+        "width": "1.6",
+        "@timestamp": "2020-05-01T07:00:16Z",
+        "@version": "2",
+        "@changeset": "84453927",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5246324,
+            -7.8182079
+          ],
+          [
+            112.5245053,
+            -7.8179493
+          ]
+        ]
+      },
+      "id": "way/798272854"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272855",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-04-30T08:29:12Z",
+        "@version": "1",
+        "@changeset": "84394901",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5248821,
+            -7.818281
+          ],
+          [
+            112.5248249,
+            -7.818426
+          ]
+        ]
+      },
+      "id": "way/798272855"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272856",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan bianglala",
+        "ref": "jalan bianglala",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-04-30T08:29:12Z",
+        "@version": "1",
+        "@changeset": "84394901",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5248249,
+            -7.818426
+          ],
+          [
+            112.5247775,
+            -7.818354
+          ],
+          [
+            112.5246459,
+            -7.8184113
+          ],
+          [
+            112.5245675,
+            -7.8182699
+          ]
+        ]
+      },
+      "id": "way/798272856"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798272857",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-04-30T08:29:12Z",
+        "@version": "1",
+        "@changeset": "84394901",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5245675,
+            -7.8182699
+          ],
+          [
+            112.5246324,
+            -7.8182079
+          ]
+        ]
+      },
+      "id": "way/798272857"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603519",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan ayun",
+        "ref": "jalan ayunn",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5245053,
+            -7.8179493
+          ],
+          [
+            112.5244112,
+            -7.8177539
+          ]
+        ]
+      },
+      "id": "way/798603519"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603520",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan coster",
+        "ref": "jalan coster",
+        "surface": "paved",
+        "width": "1.6",
+        "@timestamp": "2020-05-01T07:01:22Z",
+        "@version": "2",
+        "@changeset": "84453965",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5244112,
+            -7.8177539
+          ],
+          [
+            112.5243906,
+            -7.817568
+          ]
+        ]
+      },
+      "id": "way/798603520"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603521",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan coster",
+        "ref": "jalan coster",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5243906,
+            -7.817568
+          ],
+          [
+            112.5244989,
+            -7.8175007
+          ]
+        ]
+      },
+      "id": "way/798603521"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603522",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan coster",
+        "ref": "jalan coster",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5244989,
+            -7.8175007
+          ],
+          [
+            112.5244756,
+            -7.8173327
+          ]
+        ]
+      },
+      "id": "way/798603522"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603523",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan coster",
+        "ref": "jalan coster",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5244756,
+            -7.8173327
+          ],
+          [
+            112.5243775,
+            -7.8171824
+          ]
+        ]
+      },
+      "id": "way/798603523"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603524",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan coster",
+        "ref": "jalan coster",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5243775,
+            -7.8171824
+          ],
+          [
+            112.5243424,
+            -7.8170352
+          ]
+        ]
+      },
+      "id": "way/798603524"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603525",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan kuda",
+        "ref": "jalan kuda",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5243424,
+            -7.8170352
+          ],
+          [
+            112.5243204,
+            -7.8168658
+          ]
+        ]
+      },
+      "id": "way/798603525"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603526",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan kuda",
+        "ref": "jalan kuda",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5243204,
+            -7.8168658
+          ],
+          [
+            112.524327,
+            -7.8163979
+          ]
+        ]
+      },
+      "id": "way/798603526"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603527",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan kuda",
+        "ref": "jalan kuda",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.524327,
+            -7.8163979
+          ],
+          [
+            112.5242329,
+            -7.8161784
+          ],
+          [
+            112.5241516,
+            -7.8159887
+          ]
+        ]
+      },
+      "id": "way/798603527"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603528",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan sri agung",
+        "ref": "jalan sri agung",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5242329,
+            -7.8161784
+          ],
+          [
+            112.5244776,
+            -7.8161013
+          ]
+        ]
+      },
+      "id": "way/798603528"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603529",
+        "highway": "service",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5246067,
+            -7.8165544
+          ],
+          [
+            112.5247203,
+            -7.8167765
+          ]
+        ]
+      },
+      "id": "way/798603529"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603530",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan sri agung",
+        "ref": "jalan sri agung",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5246067,
+            -7.8165544
+          ],
+          [
+            112.5245655,
+            -7.8165705
+          ],
+          [
+            112.524543,
+            -7.8165517
+          ],
+          [
+            112.5245394,
+            -7.8165189
+          ],
+          [
+            112.5245477,
+            -7.8165001
+          ],
+          [
+            112.5245678,
+            -7.8164861
+          ]
+        ]
+      },
+      "id": "way/798603530"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603531",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan sri agung",
+        "ref": "jalan sri agung",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5245678,
+            -7.8164861
+          ],
+          [
+            112.5245666,
+            -7.8164438
+          ],
+          [
+            112.5245702,
+            -7.8164086
+          ],
+          [
+            112.5245702,
+            -7.8163852
+          ]
+        ]
+      },
+      "id": "way/798603531"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603532",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan sri agung",
+        "ref": "jalan sri agung",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5245702,
+            -7.8163852
+          ],
+          [
+            112.5245856,
+            -7.8163582
+          ],
+          [
+            112.5245927,
+            -7.8163441
+          ],
+          [
+            112.5245891,
+            -7.8163277
+          ],
+          [
+            112.5245726,
+            -7.8162843
+          ]
+        ]
+      },
+      "id": "way/798603532"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/798603533",
+        "foot": "yes",
+        "highway": "footway",
+        "lanes": "1",
+        "maxspeed": "10",
+        "motor_vehicle": "yes",
+        "name": "jalan sri agung",
+        "ref": "jalan sri agung",
+        "surface": "paved",
+        "width": "1.5",
+        "@timestamp": "2020-05-01T02:59:27Z",
+        "@version": "1",
+        "@changeset": "84447616",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            112.5245726,
+            -7.8162843
+          ],
+          [
+            112.5244776,
+            -7.8161013
+          ]
+        ]
+      },
+      "id": "way/798603533"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7116394252",
+        "name": "alskd",
+        "@timestamp": "2020-01-08T10:11:43Z",
+        "@version": "2",
+        "@changeset": "79333785",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.5251465,
+          -7.8182425
+        ]
+      },
+      "id": "node/7116394252"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7147880758",
+        "name": "goa singa",
+        "natural": "cave_entrance",
+        "@timestamp": "2020-01-21T05:23:26Z",
+        "@version": "1",
+        "@changeset": "79831152",
+        "@user": "alfanshter",
+        "@uid": "10632390"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.5249687,
+          -7.8186735
+        ]
+      },
+      "id": "node/7147880758"
     }
   ]
 }

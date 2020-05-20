@@ -136,6 +136,61 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
     //variabel RestoranSederhana
     private val ID_SOURCE_RestoranSederhana = "source_RestoranSederhana"
     private val ID_LAYER_RestoranSederhana = "layer_RestoranSederhana"
+    //variabel Bianglala
+    private val ID_SOURCE_Bianglala = "source_Bianglala"
+    private val ID_LAYER_Bianglala = "layer_Bianglala"
+
+    //variabel Singa
+    private val ID_SOURCE_Singa = "source_Singa"
+    private val ID_LAYER_Singa = "layer_Singa"
+
+    //variabel Ayunan
+    private val ID_SOURCE_Ayunan = "source_Ayunan"
+    private val ID_LAYER_Ayunan = "layer_Ayunan"
+
+    //variabel Coster
+    private val ID_SOURCE_Coster = "source_Coster"
+    private val ID_LAYER_Coster = "layer_Coster"
+
+    //variabel ToiletHutan
+    private val ID_SOURCE_ToiletHutan = "source_ToiletHutan"
+    private val ID_LAYER_ToiletHutan = "layer_ToiletHutan"
+    //variabel PacuanKuda
+    private val ID_SOURCE_PacuanKuda = "source_PacuanKuda"
+    private val ID_LAYER_PacuanKuda = "layer_PacuanKuda"
+    //variabel Bungasatu
+    private val ID_SOURCE_Bungasatu = "source_Bungasatu"
+    private val ID_LAYER_Bungasatu = "layer_Bungasatu"
+    //variabel Bungadua
+    private val ID_SOURCE_Bungadua = "source_Bungadua"
+    private val ID_LAYER_Bungadua = "layer_BungaBungadua"
+    //variabel Bungatiga
+    private val ID_SOURCE_Bungatiga = "source_Bungatiga"
+    private val ID_LAYER_Bungatiga = "layer_Bungatiga"
+    //variabel Bungaempat
+    private val ID_SOURCE_Bungaempat = "source_Bungaempat"
+    private val ID_LAYER_Bungaempat = "layer_Bungaempat"
+    //variabel Bungalima
+    private val ID_SOURCE_Bungalima = "source_Bungalima"
+    private val ID_LAYER_Bungalima = "layer_Bungalima"
+    //variabel Bungaenam
+    private val ID_SOURCE_Bungaenam = "source_Bungaenam"
+    private val ID_LAYER_Bungaenam = "layer_Bungaenam"
+    //variabel Bungatujuh
+    private val ID_SOURCE_Bungatujuh = "source_Bungatujuh"
+    private val ID_LAYER_Bungatujuh = "layer_Bungatujuh"
+    //variabel Bungadelapan
+    private val ID_SOURCE_Bungadelapan = "source_Bungadelapan"
+    private val ID_LAYER_Bungadelapan = "layer_Bungadelapan"
+    //variabel Bungasembilan
+    private val ID_SOURCE_Bungasembilan = "source_Bungasembilan"
+    private val ID_LAYER_Bungasembilan = "layer_Bungasembilan"
+    //variabel ToiletUjung
+    private val ID_SOURCE_ToiletUjung = "source_ToiletUjung"
+    private val ID_LAYER_ToiletUjung = "layer_ToiletUjung"
+    //variabel PasebanSriAgung
+    private val ID_SOURCE_PasebanSriAgung = "source_PasebanSriAgung"
+    private val ID_LAYER_PasebanSriAgung = "layer_PasebanSriAgung"
 
 
 
@@ -150,30 +205,36 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
 
     //==============VARIABEL RECYCLERVIEW=================================
     private val coordinates: Array<LatLng> = arrayOf<LatLng>(
-        LatLng(-7.818716, 112.525346),
-        LatLng(-7.818360, 112.525417),
-        LatLng(-7.818039, 112.525205),
-        LatLng(-7.818310, 112.524731),
-        LatLng(-7.817992, 112.524632),
-        LatLng(-7.817648, 112.524571)
+        LatLng(-7.819021, 112.525411),    //cinema
+        LatLng(-7.818360, 112.525417),      // kolam dewasa
+        LatLng(-7.818039, 112.525205),          // kolam anak
+        LatLng(-7.818310, 112.524731),          // bianglala
+        LatLng(-7.818811, 112.524904),          //Singa
+        LatLng(-7.817937, 112.524660)      , //ayunan
+        LatLng(-7.817663, 112.524512),       //coster
+        LatLng(-7.816245, 112.524172)       //Pacuan kuda
     )
 
     private val namalayout: Array<String> = arrayOf(
         "Bioskop 4D",
         "Kolam Renang",
         "Kolam Renang Anak",
-        "Taman Bunga",
-        "Sepeda Air",
-        "Menunggang Kuda"
+        "Bianglala",
+        "Singa",
+        "Ayunan",
+        "Coaster",
+        "Pacuan Kuda"
     )
 
     private val gambarrecycler = intArrayOf(
-        R.drawable.selectasatu,
-        R.drawable.selectadua,
-        R.drawable.selectatiga,
-        R.drawable.selectaempat,
-        R.drawable.bannerdua,
-        R.drawable.bannerbaru
+        R.drawable.bioskop,         //cinema
+        R.drawable.kolamdewasa,          //kolam dewasa
+        R.drawable.selectatiga,         //kolam anak
+        R.drawable.bianglala,        //bianglala
+        R.drawable.goasinga,           //singa
+        R.drawable.ayunan,           //ayunan
+        R.drawable.coster,
+        R.drawable.pacuankuda
     )
 
     private val SYMBOL_ICON_ID = "SYMBOL_ICON_ID"
@@ -203,7 +264,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
         recyclerView = view.find(R.id.rv_on_top_of_map)
 
         toilet.setOnClickListener {
-            val selectedLocationLatLng = LatLng(-7.817648, 112.524571)
+            val selectedLocationLatLng = LatLng(-7.817232, 112.524332)
             val newCameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(selectedLocationLatLng)
                 .build()
@@ -306,6 +367,118 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
 
             )
 
+            val Bianglala = LatLngQuad(
+                LatLng(-7.818230, 112.524732),
+                LatLng(-7.818357, 112.524753),
+                LatLng(-7.818404, 112.524676),
+            LatLng(-7.818273, 112.524629)
+
+            )
+
+            val Singa = LatLngQuad(
+                LatLng(-7.818772, 112.524917),
+                LatLng(-7.818836, 112.524949),
+                LatLng(-7.818866, 112.524883),
+                LatLng(-7.818797, 112.524845)
+            )
+
+            val Ayunan = LatLngQuad(
+                LatLng(-7.817832, 112.524725),
+                LatLng(-7.817961, 112.524777),
+                LatLng(-7.818020, 112.524619),
+                LatLng(-7.817892, 112.524589)
+            )
+
+            val Coster = LatLngQuad(
+                LatLng(-7.817547, 112.524675),
+                LatLng(-7.817671, 112.524731),
+                LatLng(-7.817746, 112.524545),
+                LatLng(-7.817620, 112.524473)
+            )
+
+            val ToiletHutan = LatLngQuad(
+                LatLng(-7.817184, 112.524339),
+                LatLng(-7.817287, 112.524373),
+                LatLng(-7.817322, 112.524276),
+                LatLng(-7.817206, 112.524219)
+            )
+            val PacuanKuda = LatLngQuad(
+                LatLng(-7.815977, 112.523985),
+                LatLng(-7.816294, 112.524155),
+                LatLng(-7.816380, 112.523915),
+                LatLng(-7.816043, 112.523751)
+            )
+            val Bungasatu = LatLngQuad(
+                LatLng(-7.817321, 112.524935),
+                LatLng(-7.817537, 112.525014),
+                LatLng(-7.817591, 112.524870),
+                LatLng(-7.817367, 112.524818)
+            )
+            val Bungadua = LatLngQuad(
+                LatLng(-7.817109, 112.524853),
+                LatLng(-7.817284, 112.524924),
+                LatLng(-7.817335, 112.524810),
+                LatLng(-7.817154, 112.524755)
+            )
+
+            val Bungatiga = LatLngQuad(
+                LatLng(-7.816913, 112.524767),
+                LatLng(-7.817091, 112.524845),
+                LatLng(-7.817122, 112.524749),
+                LatLng(-7.816954, 112.524691)
+            )
+            val Bungaempat = LatLngQuad(
+                LatLng(-7.817408, 112.525089),
+                LatLng(-7.817526, 112.525132),
+                LatLng(-7.817550, 112.525072),
+                LatLng(-7.817433, 112.525032)
+            )
+            val Bungalima = LatLngQuad(
+                LatLng(-7.817290, 112.525036),
+                LatLng(-7.817392, 112.525077),
+                LatLng(-7.817412, 112.525022),
+                LatLng(-7.817307, 112.524981)
+            )
+            val Bungaenam = LatLngQuad(
+                LatLng(-7.817153, 112.524978),
+                LatLng(-7.817263, 112.525026),
+                LatLng(-7.817283, 112.524973),
+                LatLng(-7.817172, 112.524932)
+            )
+            val Bungatujuh = LatLngQuad(
+                LatLng(-7.817055, 112.524940),
+                LatLng(-7.817140, 112.524967),
+                LatLng(-7.817158, 112.524925),
+                LatLng(-7.817074, 112.524893)
+            )
+            val Bungadelapan = LatLngQuad(
+                LatLng(-7.816686, 112.524832),
+                LatLng(-7.816981, 112.524948),
+                LatLng(-7.817018, 112.524873),
+                LatLng(-7.816732, 112.524753)
+            )
+
+            val Bungasembilan = LatLngQuad(
+                LatLng(-7.816603, 112.524613),
+                LatLng(-7.816878, 112.524725),
+                LatLng(-7.816912, 112.524631),
+                LatLng(-7.816652, 112.524523)
+            )
+            val ToiletUjung = LatLngQuad(
+                LatLng(-7.816183, 112.524787),
+                LatLng(-7.816293, 112.524833),
+                LatLng(-7.816346, 112.524722),
+                LatLng(-7.816267, 112.524671)
+            )
+            val PasebanSriAgung = LatLngQuad(
+                LatLng(-7.815906, 112.524621),
+                LatLng(-7.816025, 112.524661),
+                LatLng(-7.816094, 112.524501),
+                LatLng(-7.815977, 112.524455)
+            )
+
+
+
 
 
             it.addSource(ImageSource(ID_IMAGE_SOURCE, quad, R.drawable.selecta))
@@ -331,9 +504,57 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             //gambar RestoranSederhana
             it.addSource(ImageSource(ID_SOURCE_RestoranSederhana, restoransederhana, R.drawable.restoranasri))
             it.addLayer(RasterLayer(ID_LAYER_RestoranSederhana, ID_SOURCE_RestoranSederhana))
-
-
-
+            //gambar Bianglala
+            it.addSource(ImageSource(ID_SOURCE_Bianglala, Bianglala, R.drawable.bianglala))
+            it.addLayer(RasterLayer(ID_LAYER_Bianglala, ID_SOURCE_Bianglala))
+            //gambar Singa
+            it.addSource(ImageSource(ID_SOURCE_Singa, Singa, R.drawable.lion))
+            it.addLayer(RasterLayer(ID_LAYER_Singa, ID_SOURCE_Singa))
+            //gambar Ayunan
+            it.addSource(ImageSource(ID_SOURCE_Ayunan, Ayunan, R.drawable.ayunan))
+            it.addLayer(RasterLayer(ID_LAYER_Ayunan, ID_SOURCE_Ayunan))
+            //gambar Coster
+            it.addSource(ImageSource(ID_SOURCE_Coster, Coster, R.drawable.costerpng))
+            it.addLayer(RasterLayer(ID_LAYER_Coster, ID_SOURCE_Coster))
+            //gambar ToiletHutan
+            it.addSource(ImageSource(ID_SOURCE_ToiletHutan, ToiletHutan, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_ToiletHutan, ID_SOURCE_ToiletHutan))
+            //gambar PacuanKuda
+            it.addSource(ImageSource(ID_SOURCE_PacuanKuda, PacuanKuda, R.drawable.horse))
+            it.addLayer(RasterLayer(ID_LAYER_PacuanKuda, ID_SOURCE_PacuanKuda))
+            //gambar Bungasatu
+            it.addSource(ImageSource(ID_SOURCE_Bungasatu, Bungasatu, R.drawable.bungasatu))
+            it.addLayer(RasterLayer(ID_LAYER_Bungasatu, ID_SOURCE_Bungasatu))
+            //gambar Bungadua
+            it.addSource(ImageSource(ID_SOURCE_Bungadua, Bungadua, R.drawable.bungadua))
+            it.addLayer(RasterLayer(ID_LAYER_Bungadua, ID_SOURCE_Bungadua))
+            //gambar Bungatiga
+            it.addSource(ImageSource(ID_SOURCE_Bungatiga, Bungatiga, R.drawable.bungatiga))
+            it.addLayer(RasterLayer(ID_LAYER_Bungatiga, ID_SOURCE_Bungatiga))
+            //gambar Bungaempat
+            it.addSource(ImageSource(ID_SOURCE_Bungaempat, Bungaempat, R.drawable.bungaempat))
+            it.addLayer(RasterLayer(ID_LAYER_Bungaempat, ID_SOURCE_Bungaempat))
+            //gambar Bungalima
+            it.addSource(ImageSource(ID_SOURCE_Bungalima, Bungalima, R.drawable.bungalima))
+            it.addLayer(RasterLayer(ID_LAYER_Bungalima, ID_SOURCE_Bungalima))
+            //gambar Bungaenam
+            it.addSource(ImageSource(ID_SOURCE_Bungaenam, Bungaenam, R.drawable.bungaenam))
+            it.addLayer(RasterLayer(ID_LAYER_Bungaenam, ID_SOURCE_Bungaenam))
+            //gambar Bungatujuh
+            it.addSource(ImageSource(ID_SOURCE_Bungatujuh, Bungatujuh, R.drawable.bungatujuh))
+            it.addLayer(RasterLayer(ID_LAYER_Bungatujuh, ID_SOURCE_Bungatujuh))
+            //gambar Bungadelapan
+            it.addSource(ImageSource(ID_SOURCE_Bungadelapan, Bungadelapan, R.drawable.bungadelapan))
+            it.addLayer(RasterLayer(ID_LAYER_Bungadelapan, ID_SOURCE_Bungadelapan))
+            //gambar Bungasembilan
+            it.addSource(ImageSource(ID_SOURCE_Bungasembilan, Bungasembilan, R.drawable.bungasembilan))
+            it.addLayer(RasterLayer(ID_LAYER_Bungasembilan, ID_SOURCE_Bungasembilan))
+            //gambar ToiletUjung
+            it.addSource(ImageSource(ID_SOURCE_ToiletUjung, ToiletUjung, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_ToiletUjung, ID_SOURCE_ToiletUjung))
+            //gambar PasebanSriAgung
+            it.addSource(ImageSource(ID_SOURCE_PasebanSriAgung, PasebanSriAgung, R.drawable.hall))
+            it.addLayer(RasterLayer(ID_LAYER_PasebanSriAgung, ID_SOURCE_PasebanSriAgung))
 
 
             LoadGeoJson(this).execute()
@@ -573,7 +794,7 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
                                 PropertyFactory.lineOpacity(
                                     .5f
                                 ),
-                                PropertyFactory.lineWidth(1f),
+                                PropertyFactory.lineWidth(5f),
                                 PropertyFactory.lineColor(
                                     Color.parseColor("#34b0d0")
                                 )
@@ -778,7 +999,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback, PermissionsListener,
             private var clickListener: ItemClickListener? = null
             fun setClickListener(itemClickListener: ItemClickListener?) {
                 clickListener = itemClickListener
-                Toast.makeText(getApplicationContext(), "doremi", Toast.LENGTH_SHORT).show()
             }
 
             override fun onClick(view: View?) {

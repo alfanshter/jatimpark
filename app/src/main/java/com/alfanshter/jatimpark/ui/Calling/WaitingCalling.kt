@@ -30,8 +30,9 @@ lateinit var sessionManager: SessionManager
             HashMap()
         notificationMessage["message"] = "Ada Panggilan Darurat"
         notificationMessage["from"] = mCurrentId!!
+        notificationMessage["telepon"] = sessionManager.getTelfon().toString()
         panggilanProgress.visibility = View.VISIBLE
-        mFirestore!!.collection("Admin/kVOopdPBHGhutxoo1965c4BvMTp1/Notifications")
+        mFirestore!!.collection("Admin/zGWgSJzSwHZhkUdsRz30HdveOpF3/Notifications")
             .add(notificationMessage).addOnSuccessListener {
                 panggilanProgress.visibility = View.INVISIBLE
                 toast("Request panggilan berhasil ")

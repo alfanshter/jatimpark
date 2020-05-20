@@ -23,7 +23,6 @@ class Appsc : Application() {
     override fun onCreate() {
         super.onCreate()
         sessionManager = SessionManager(this)
-
                     USER_ID = (nomor.toString())
                     sinchClient = Sinch.getSinchClientBuilder().context(this@Appsc)
                         .applicationKey("e5178df1-dfff-474e-9194-1e775ed10632")

@@ -49,6 +49,11 @@ class DashboardFragment : Fragment(), AnkoLogger {
     var promos: List<BannerPromo> = listOf()
     var status = ""
 
+    companion object{
+        lateinit var textSliderView : TextSliderView
+
+    }
+
     @SuppressLint("StringFormatInvalid")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,12 +61,16 @@ class DashboardFragment : Fragment(), AnkoLogger {
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        val time = System.currentTimeMillis()
+        info { "alfanbaru$time" }
 
         val musa = FirebaseAuth.getInstance()
         val telfon = musa.currentUser!!.phoneNumber
         info { "telfon : $telfon" }
         databaseReference = FirebaseDatabase.getInstance().reference.child("Selecta").child("Home")
         recyclerView = root.find(R.id.recyclerinfo)
+
+        textSliderView = TextSliderView(context!!.applicationContext)
 
         val LayoutManager = LinearLayoutManager(context!!.applicationContext)
         LayoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -137,10 +146,7 @@ class DashboardFragment : Fragment(), AnkoLogger {
                     var keysplit = key.split("_")
                     val nama = keysplit[0]
                     val id = keysplit[1]
-
-
-                    val textSliderView = TextSliderView(context!!.applicationContext)
-                    textSliderView
+             textSliderView
                         .description(nama)
                         .image(image_list!!.get(key))
                         .setRequestOption(requestOptions)

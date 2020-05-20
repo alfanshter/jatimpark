@@ -10,8 +10,10 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -21,12 +23,14 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.jatimpark.Model.ModelSharing
+
 import com.alfanshter.jatimpark.R
 import com.alfanshter.jatimpark.ServiceLocation.MyReceiver
 import com.alfanshter.jatimpark.Session.SessionManager
@@ -34,6 +38,11 @@ import com.alfanshter.jatimpark.Tracking_Rombongan
 import com.alfanshter.jatimpark.Utils.Utils
 import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Adapter.UsersRecyclerAdapter
 import com.alfanshter.jatimpark.ui.shareRombongan.listuser.Model.Users
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -45,13 +54,17 @@ import com.google.firebase.database.*
 import com.google.firebase.database.BuildConfig
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.perf.metrics.Trace
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.mapbox.android.core.location.*
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngQuad
 import com.mapbox.mapboxsdk.location.LocationComponent
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
@@ -60,19 +73,32 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerView
 import com.mapbox.mapboxsdk.plugins.markerview.MarkerViewManager
+import com.mapbox.mapboxsdk.style.layers.LineLayer
+import com.mapbox.mapboxsdk.style.layers.Property
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory
+import com.mapbox.mapboxsdk.style.layers.RasterLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import com.mapbox.mapboxsdk.style.sources.ImageSource
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_share_rombonganduaactivity.*
 import kotlinx.android.synthetic.main.fragment_sharerombongandua.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
+import timber.log.Timber
+import java.io.DataOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.lang.ref.WeakReference
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import kotlinx.android.synthetic.main.fragment_sharerombongandua.btn_qrcode as btn_qrcode1
 
 class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCallback,
     PermissionsListener, SharedPreferences.OnSharedPreferenceChangeListener {
-
+    private lateinit var trace: Trace
     lateinit var databaseReference: DatabaseReference
     lateinit var mapboxMap: MapboxMap
     private var callback = MainActivityLocationCallbackBaru(this)
@@ -88,23 +114,121 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
     private val DEFAULT_MAX_WAIT_TIME = DEFAULT_INTERVAL_IN_MILLISECONDS * 5
     private var statusjoin: Boolean = false
     lateinit var sessionManager: SessionManager
-    private var mLocationRequest: LocationRequest? = null
     private var mFusedLocationClient: FusedLocationProviderClient? = null
-    private val TAG: String? = ShareRombonganduaactivity::class.simpleName
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     @SuppressLint("UseSparseArrays")
     var markerMap: HashMap<Int, MarkerView> = HashMap<Int, MarkerView>()
-    private val UPDATE_INTERVAL: Long = 15000 // Every 60 seconds.
-    private val FASTEST_UPDATE_INTERVAL: Long = 10000
-    private val MAX_WAIT_TIME: Long = UPDATE_INTERVAL * 5 // Every 5 minutes.
     private lateinit var auth: FirebaseAuth
     lateinit var userID: String
     lateinit var user: FirebaseUser
     lateinit var referensehapus: DatabaseReference
     var statusupdate = 0
+
+    private val numStartupTasks = CountDownLatch(2)
+    private val ID_IMAGE_SOURCE = "animated_image_source"
+    private val ID_IMAGE_SOURCEdua = "animated_image_source2"
+
+    private val ID_IMAGE_LAYER = "animated_image_layer"
+    private val ID_IMAGE_LAYERdua = "animated_image_layer2"
+
+    //variabel restoran
+    private val ID_SOURCE_Restoran = "source_restoran"
+    private val ID_IMAGE_Restoran = "layer_restoran"
+
+    //variabel kolamdewasa
+    private val ID_SOURCE_PoolDewasa = "source_pool"
+    private val ID_LAYER_PoolDewasa = "layer_pool"
+
+    //variabel kamarganti
+    private val ID_SOURCE_KamarGanti = "source_kmrganti"
+    private val ID_LAYER_KamarGanti = "layer_kmrganti"
+
+    //variabel restoranasri
+    private val ID_SOURCE_RestoranAsri = "source_restoranasri"
+    private val ID_LAYER_RestoranAsri = "layer_restoranasri"
+
+    //variabel cienam
+    private val ID_SOURCE_Cinema = "source_cinema"
+    private val ID_LAYER_Cinema = "layer_cinema"
+    //variabel RestoranSederhana
+    private val ID_SOURCE_RestoranSederhana = "source_RestoranSederhana"
+    private val ID_LAYER_RestoranSederhana = "layer_RestoranSederhana"
+    //variabel Bianglala
+    private val ID_SOURCE_Bianglala = "source_Bianglala"
+    private val ID_LAYER_Bianglala = "layer_Bianglala"
+
+    //variabel Singa
+    private val ID_SOURCE_Singa = "source_Singa"
+    private val ID_LAYER_Singa = "layer_Singa"
+
+    //variabel Ayunan
+    private val ID_SOURCE_Ayunan = "source_Ayunan"
+    private val ID_LAYER_Ayunan = "layer_Ayunan"
+
+    //variabel Coster
+    private val ID_SOURCE_Coster = "source_Coster"
+    private val ID_LAYER_Coster = "layer_Coster"
+
+    //variabel ToiletHutan
+    private val ID_SOURCE_ToiletHutan = "source_ToiletHutan"
+    private val ID_LAYER_ToiletHutan = "layer_ToiletHutan"
+    //variabel PacuanKuda
+    private val ID_SOURCE_PacuanKuda = "source_PacuanKuda"
+    private val ID_LAYER_PacuanKuda = "layer_PacuanKuda"
+    //variabel Bungasatu
+    private val ID_SOURCE_Bungasatu = "source_Bungasatu"
+    private val ID_LAYER_Bungasatu = "layer_Bungasatu"
+    //variabel Bungadua
+    private val ID_SOURCE_Bungadua = "source_Bungadua"
+    private val ID_LAYER_Bungadua = "layer_BungaBungadua"
+    //variabel Bungatiga
+    private val ID_SOURCE_Bungatiga = "source_Bungatiga"
+    private val ID_LAYER_Bungatiga = "layer_Bungatiga"
+    //variabel Bungaempat
+    private val ID_SOURCE_Bungaempat = "source_Bungaempat"
+    private val ID_LAYER_Bungaempat = "layer_Bungaempat"
+    //variabel Bungalima
+    private val ID_SOURCE_Bungalima = "source_Bungalima"
+    private val ID_LAYER_Bungalima = "layer_Bungalima"
+    //variabel Bungaenam
+    private val ID_SOURCE_Bungaenam = "source_Bungaenam"
+    private val ID_LAYER_Bungaenam = "layer_Bungaenam"
+    //variabel Bungatujuh
+    private val ID_SOURCE_Bungatujuh = "source_Bungatujuh"
+    private val ID_LAYER_Bungatujuh = "layer_Bungatujuh"
+    //variabel Bungadelapan
+    private val ID_SOURCE_Bungadelapan = "source_Bungadelapan"
+    private val ID_LAYER_Bungadelapan = "layer_Bungadelapan"
+    //variabel Bungasembilan
+    private val ID_SOURCE_Bungasembilan = "source_Bungasembilan"
+    private val ID_LAYER_Bungasembilan = "layer_Bungasembilan"
+    //variabel ToiletUjung
+    private val ID_SOURCE_ToiletUjung = "source_ToiletUjung"
+    private val ID_LAYER_ToiletUjung = "layer_ToiletUjung"
+    //variabel PasebanSriAgung
+    private val ID_SOURCE_PasebanSriAgung = "source_PasebanSriAgung"
+    private val ID_LAYER_PasebanSriAgung = "layer_PasebanSriAgung"
+
     companion object {
+
+        fun convertStreamToString(`is`: InputStream?): String {
+            val scanner = Scanner(`is`).useDelimiter("\\A")
+            return if (scanner.hasNext()) scanner.next() else ""
+        }
+
+        private val TAG: String? = ShareRombonganduaactivity::class.simpleName
+        private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+        private var root: View? = null
+        private val UPDATE_INTERVAL: Long = 15000 // Every 60 seconds.
+        private val FASTEST_UPDATE_INTERVAL: Long = 10000 // Every 30 seconds
+        private val MAX_WAIT_TIME: Long = UPDATE_INTERVAL * 5 // Every 5 minutes.
+
         lateinit var nilaikode: String
+        private const val STARTUP_TRACE_NAME = "trace_ambilgambar"
+        private const val REQUESTS_COUNTER_NAME = "requests sent"
+        private const val FILE_SIZE_COUNTER_NAME = "file size"
     }
+    private var mLocationRequest: LocationRequest? = null
+
     var dialog_bidding: Dialog? = null
 
 
@@ -131,7 +255,7 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
         //============
 
         if (!checkPermissions()) {
-//            requestPermissions()
+            requestPermissions()
         }
         mFusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
@@ -189,10 +313,317 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
 
 
     }
+    private fun requestPermissions() {
+        val permissionAccessFineLocationApproved =
+            (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            )
+                    == PackageManager.PERMISSION_GRANTED)
+        val backgroundLocationPermissionApproved =
+            (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+                    == PackageManager.PERMISSION_GRANTED)
+        val shouldProvideRationale =
+            permissionAccessFineLocationApproved && backgroundLocationPermissionApproved
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            Log.i(
+               ShareRombonganduaactivity.TAG,
+                "Displaying permission rationale to provide additional context."
+            )
+            Snackbar.make(
+                find(R.id.sharerombonganduaactivity),
+                R.string.permission_rationale,
+                Snackbar.LENGTH_INDEFINITE
+            )
+                .setAction(R.string.ok) { // Request permission
+                    ActivityCompat.requestPermissions(
+                       this, arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                        ),
+                        REQUEST_PERMISSIONS_REQUEST_CODE
+                    )
+                }
+                .show()
+        } else {
+            Log.i(TAG, "Requesting permission")
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                REQUEST_PERMISSIONS_REQUEST_CODE
+            )
+        }
+    }
+    fun removeLocationUpdates(view: View?) {
+        Log.i(TAG, "Removing location updates")
+        Utils.setRequestingLocationUpdates(this, false)
+        mFusedLocationClient!!.removeLocationUpdates(getPendingIntent())
+    }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
         mapboxMap.setStyle(Style.LIGHT) {
+            // Set the latitude and longitude values for the image's four corners
+            val quad = LatLngQuad(
+                LatLng(-7.817532, 112.525955),
+                LatLng(-7.817291, 112.525754),
+                LatLng(-7.817399, 112.525500),
+                LatLng(-7.817588, 112.525624)
+            )
+
+            val kolamanak = LatLngQuad(
+                LatLng(-7.81818, 112.52519),
+                LatLng(-7.81812, 112.52536),
+                LatLng(-7.81786, 112.52517),
+                LatLng(-7.81790, 112.52506)
+            )
+
+            val restoran = LatLngQuad(
+                LatLng(-7.818378, 112.525175),
+                LatLng(-7.818515, 112.525235),
+                LatLng(-7.818564, 112.525129),
+                LatLng(-7.818416, 112.525073)
+
+
+            )
+
+            val pooldewasa = LatLngQuad(
+                LatLng(-7.818183, 112.525362),
+                LatLng(-7.818494, 112.525534),
+                LatLng(-7.818558, 112.525436),
+                LatLng(-7.818241, 112.525266)
+
+            )
+
+            val kamarganti = LatLngQuad(
+                LatLng(-7.818159, 112.525160),
+                LatLng(-7.818094, 112.525275),
+                LatLng(-7.818147, 112.525306),
+                LatLng(-7.818211, 112.525189)
+
+            )
+            val restoranasri = LatLngQuad(
+                LatLng(-7.818006, 112.525548),
+                LatLng(-7.818185, 112.525663),
+                LatLng(-7.818254, 112.525527),
+                LatLng(-7.818090, 112.525432)
+
+            )
+
+            val cinema = LatLngQuad(
+                LatLng(-7.819043, 112.525304),
+                LatLng(-7.818888, 112.525524),
+                LatLng(-7.818992, 112.525580),
+                LatLng(-7.819135, 112.525359)
+
+            )
+
+            val restoransederhana = LatLngQuad(
+                LatLng(-7.817520, 112.525263),
+                LatLng(-7.817764, 112.525396),
+                LatLng(-7.817842, 112.525246),
+                LatLng(-7.817607, 112.525123)
+
+            )
+
+            val Bianglala = LatLngQuad(
+                LatLng(-7.818230, 112.524732),
+                LatLng(-7.818357, 112.524753),
+                LatLng(-7.818404, 112.524676),
+                LatLng(-7.818273, 112.524629)
+
+            )
+
+            val Singa = LatLngQuad(
+                LatLng(-7.818772, 112.524917),
+                LatLng(-7.818836, 112.524949),
+                LatLng(-7.818866, 112.524883),
+                LatLng(-7.818797, 112.524845)
+            )
+
+            val Ayunan = LatLngQuad(
+                LatLng(-7.817832, 112.524725),
+                LatLng(-7.817961, 112.524777),
+                LatLng(-7.818020, 112.524619),
+                LatLng(-7.817892, 112.524589)
+            )
+
+            val Coster = LatLngQuad(
+                LatLng(-7.817547, 112.524675),
+                LatLng(-7.817671, 112.524731),
+                LatLng(-7.817746, 112.524545),
+                LatLng(-7.817620, 112.524473)
+            )
+
+            val ToiletHutan = LatLngQuad(
+                LatLng(-7.817184, 112.524339),
+                LatLng(-7.817287, 112.524373),
+                LatLng(-7.817322, 112.524276),
+                LatLng(-7.817206, 112.524219)
+            )
+            val PacuanKuda = LatLngQuad(
+                LatLng(-7.815977, 112.523985),
+                LatLng(-7.816294, 112.524155),
+                LatLng(-7.816380, 112.523915),
+                LatLng(-7.816043, 112.523751)
+            )
+            val Bungasatu = LatLngQuad(
+                LatLng(-7.817321, 112.524935),
+                LatLng(-7.817537, 112.525014),
+                LatLng(-7.817591, 112.524870),
+                LatLng(-7.817367, 112.524818)
+            )
+            val Bungadua = LatLngQuad(
+                LatLng(-7.817109, 112.524853),
+                LatLng(-7.817284, 112.524924),
+                LatLng(-7.817335, 112.524810),
+                LatLng(-7.817154, 112.524755)
+            )
+
+            val Bungatiga = LatLngQuad(
+                LatLng(-7.816913, 112.524767),
+                LatLng(-7.817091, 112.524845),
+                LatLng(-7.817122, 112.524749),
+                LatLng(-7.816954, 112.524691)
+            )
+            val Bungaempat = LatLngQuad(
+                LatLng(-7.817408, 112.525089),
+                LatLng(-7.817526, 112.525132),
+                LatLng(-7.817550, 112.525072),
+                LatLng(-7.817433, 112.525032)
+            )
+            val Bungalima = LatLngQuad(
+                LatLng(-7.817290, 112.525036),
+                LatLng(-7.817392, 112.525077),
+                LatLng(-7.817412, 112.525022),
+                LatLng(-7.817307, 112.524981)
+            )
+            val Bungaenam = LatLngQuad(
+                LatLng(-7.817153, 112.524978),
+                LatLng(-7.817263, 112.525026),
+                LatLng(-7.817283, 112.524973),
+                LatLng(-7.817172, 112.524932)
+            )
+            val Bungatujuh = LatLngQuad(
+                LatLng(-7.817055, 112.524940),
+                LatLng(-7.817140, 112.524967),
+                LatLng(-7.817158, 112.524925),
+                LatLng(-7.817074, 112.524893)
+            )
+            val Bungadelapan = LatLngQuad(
+                LatLng(-7.816686, 112.524832),
+                LatLng(-7.816981, 112.524948),
+                LatLng(-7.817018, 112.524873),
+                LatLng(-7.816732, 112.524753)
+            )
+
+            val Bungasembilan = LatLngQuad(
+                LatLng(-7.816603, 112.524613),
+                LatLng(-7.816878, 112.524725),
+                LatLng(-7.816912, 112.524631),
+                LatLng(-7.816652, 112.524523)
+            )
+            val ToiletUjung = LatLngQuad(
+                LatLng(-7.816183, 112.524787),
+                LatLng(-7.816293, 112.524833),
+                LatLng(-7.816346, 112.524722),
+                LatLng(-7.816267, 112.524671)
+            )
+            val PasebanSriAgung = LatLngQuad(
+                LatLng(-7.815906, 112.524621),
+                LatLng(-7.816025, 112.524661),
+                LatLng(-7.816094, 112.524501),
+                LatLng(-7.815977, 112.524455)
+            )
+
+
+
+
+
+            it.addSource(ImageSource(ID_IMAGE_SOURCE, quad, R.drawable.selecta))
+            it.addSource(ImageSource(ID_IMAGE_SOURCEdua, kolamanak, R.drawable.pool))
+            it.addLayer(RasterLayer(ID_IMAGE_LAYER, ID_IMAGE_SOURCE))
+            it.addLayer(RasterLayer(ID_IMAGE_LAYERdua, ID_IMAGE_SOURCEdua))
+
+            //gambar restoran
+            it.addSource(ImageSource(ID_SOURCE_Restoran, restoran, R.drawable.restaurant))
+            it.addLayer(RasterLayer(ID_IMAGE_Restoran, ID_SOURCE_Restoran))
+            //gambar kolamdewasa
+            it.addSource(ImageSource(ID_SOURCE_PoolDewasa, pooldewasa, R.drawable.pooldewasa))
+            it.addLayer(RasterLayer(ID_LAYER_PoolDewasa, ID_SOURCE_PoolDewasa))
+            //gambar kamarganti
+            it.addSource(ImageSource(ID_SOURCE_KamarGanti, kamarganti, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_KamarGanti, ID_SOURCE_KamarGanti))
+            //gambar Restoranasri
+            it.addSource(ImageSource(ID_SOURCE_RestoranAsri, restoranasri, R.drawable.restoranasri))
+            it.addLayer(RasterLayer(ID_LAYER_RestoranAsri, ID_SOURCE_RestoranAsri))
+            //gambar cinema
+            it.addSource(ImageSource(ID_SOURCE_Cinema, cinema, R.drawable.cinema))
+            it.addLayer(RasterLayer(ID_LAYER_Cinema, ID_SOURCE_Cinema))
+            //gambar RestoranSederhana
+            it.addSource(ImageSource(ID_SOURCE_RestoranSederhana, restoransederhana, R.drawable.restoranasri))
+            it.addLayer(RasterLayer(ID_LAYER_RestoranSederhana, ID_SOURCE_RestoranSederhana))
+            //gambar Bianglala
+            it.addSource(ImageSource(ID_SOURCE_Bianglala, Bianglala, R.drawable.bianglala))
+            it.addLayer(RasterLayer(ID_LAYER_Bianglala, ID_SOURCE_Bianglala))
+            //gambar Singa
+            it.addSource(ImageSource(ID_SOURCE_Singa, Singa, R.drawable.lion))
+            it.addLayer(RasterLayer(ID_LAYER_Singa, ID_SOURCE_Singa))
+            //gambar Ayunan
+            it.addSource(ImageSource(ID_SOURCE_Ayunan, Ayunan, R.drawable.ayunan))
+            it.addLayer(RasterLayer(ID_LAYER_Ayunan, ID_SOURCE_Ayunan))
+            //gambar Coster
+            it.addSource(ImageSource(ID_SOURCE_Coster, Coster, R.drawable.costerpng))
+            it.addLayer(RasterLayer(ID_LAYER_Coster, ID_SOURCE_Coster))
+            //gambar ToiletHutan
+            it.addSource(ImageSource(ID_SOURCE_ToiletHutan, ToiletHutan, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_ToiletHutan, ID_SOURCE_ToiletHutan))
+            //gambar PacuanKuda
+            it.addSource(ImageSource(ID_SOURCE_PacuanKuda, PacuanKuda, R.drawable.horse))
+            it.addLayer(RasterLayer(ID_LAYER_PacuanKuda, ID_SOURCE_PacuanKuda))
+            //gambar Bungasatu
+            it.addSource(ImageSource(ID_SOURCE_Bungasatu, Bungasatu, R.drawable.bungasatu))
+            it.addLayer(RasterLayer(ID_LAYER_Bungasatu, ID_SOURCE_Bungasatu))
+            //gambar Bungadua
+            it.addSource(ImageSource(ID_SOURCE_Bungadua, Bungadua, R.drawable.bungadua))
+            it.addLayer(RasterLayer(ID_LAYER_Bungadua, ID_SOURCE_Bungadua))
+            //gambar Bungatiga
+            it.addSource(ImageSource(ID_SOURCE_Bungatiga, Bungatiga, R.drawable.bungatiga))
+            it.addLayer(RasterLayer(ID_LAYER_Bungatiga, ID_SOURCE_Bungatiga))
+            //gambar Bungaempat
+            it.addSource(ImageSource(ID_SOURCE_Bungaempat, Bungaempat, R.drawable.bungaempat))
+            it.addLayer(RasterLayer(ID_LAYER_Bungaempat, ID_SOURCE_Bungaempat))
+            //gambar Bungalima
+            it.addSource(ImageSource(ID_SOURCE_Bungalima, Bungalima, R.drawable.bungalima))
+            it.addLayer(RasterLayer(ID_LAYER_Bungalima, ID_SOURCE_Bungalima))
+            //gambar Bungaenam
+            it.addSource(ImageSource(ID_SOURCE_Bungaenam, Bungaenam, R.drawable.bungaenam))
+            it.addLayer(RasterLayer(ID_LAYER_Bungaenam, ID_SOURCE_Bungaenam))
+            //gambar Bungatujuh
+            it.addSource(ImageSource(ID_SOURCE_Bungatujuh, Bungatujuh, R.drawable.bungatujuh))
+            it.addLayer(RasterLayer(ID_LAYER_Bungatujuh, ID_SOURCE_Bungatujuh))
+            //gambar Bungadelapan
+            it.addSource(ImageSource(ID_SOURCE_Bungadelapan, Bungadelapan, R.drawable.bungadelapan))
+            it.addLayer(RasterLayer(ID_LAYER_Bungadelapan, ID_SOURCE_Bungadelapan))
+            //gambar Bungasembilan
+            it.addSource(ImageSource(ID_SOURCE_Bungasembilan, Bungasembilan, R.drawable.bungasembilan))
+            it.addLayer(RasterLayer(ID_LAYER_Bungasembilan, ID_SOURCE_Bungasembilan))
+            //gambar ToiletUjung
+            it.addSource(ImageSource(ID_SOURCE_ToiletUjung, ToiletUjung, R.drawable.kamarganti))
+            it.addLayer(RasterLayer(ID_LAYER_ToiletUjung, ID_SOURCE_ToiletUjung))
+            //gambar PasebanSriAgung
+            it.addSource(ImageSource(ID_SOURCE_PasebanSriAgung, PasebanSriAgung, R.drawable.hall))
+            it.addLayer(RasterLayer(ID_LAYER_PasebanSriAgung, ID_SOURCE_PasebanSriAgung))
+            LoadGeoJson(this).execute()
 
             enableLocationComponent(it)
             markerViewManager = MarkerViewManager(mapviewshare, mapboxMap)
@@ -200,7 +631,24 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
             if (setMarker == true) {
                 if (statusupdate==0)
                 {
+                    trace = FirebasePerformance.getInstance().newTrace(STARTUP_TRACE_NAME)
+                    Log.d(TAG, "Starting trace")
+                    trace.start()
                     ambildata()
+                    trace.incrementMetric(REQUESTS_COUNTER_NAME, 1)
+                    Thread(Runnable {
+                        try {
+                            numStartupTasks.await()
+                        } catch (e: InterruptedException) {
+                            Log.e(TAG, "Unable to wait for startup task completion.")
+                        } finally {
+                            Log.d(TAG, "Stopping trace")
+                            trace.stop()
+                            runOnUiThread {
+                                toast("Trace complete")
+                            }
+                        }
+                    }).start()
 
                 }
 
@@ -210,8 +658,72 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
 
     }
 
-    fun ambildata() {
+    private class LoadGeoJson internal constructor(activity: ShareRombonganduaactivity) :
+        AsyncTask<Void?, Void?, FeatureCollection?>() {
+        private val weakReference: WeakReference<ShareRombonganduaactivity> = WeakReference(
+            activity
+        )
 
+
+        override fun onPostExecute(featureCollection: FeatureCollection?) {
+            super.onPostExecute(featureCollection)
+            val activity: ShareRombonganduaactivity? =
+                weakReference.get()
+            if (activity != null && featureCollection != null) {
+                activity.drawLines(featureCollection)
+            }
+        }
+
+        override fun doInBackground(vararg params: Void?): FeatureCollection? {
+            try {
+                val activity: ShareRombonganduaactivity? =
+                    weakReference.get()
+                if (activity != null) {
+
+                    val inputStream: InputStream? =
+                        activity.application.assets?.open("example.geojson")
+                    return FeatureCollection.fromJson(
+                        convertStreamToString(
+                            inputStream
+                        )
+                    )
+                }
+            } catch (exception: Exception) {
+                Timber.e("Exception Loading GeoJSON: %s", exception.toString())
+            }
+            return null
+        }
+
+    }
+
+    private fun drawLines(featureCollection: FeatureCollection) {
+        mapboxMap.getStyle { style: Style ->
+            if (featureCollection.features() != null) {
+                if (featureCollection.features()!!.size > 0) {
+                    style.addSource(GeoJsonSource("line-source", featureCollection))
+                    // The layer properties for our line. This is where we make the line dotted, set the
+                    // color, etc.
+                    style.addLayer(
+                        LineLayer("linelayer", "line-source")
+                            .withProperties(
+                                PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                                PropertyFactory.lineOpacity(
+                                    .5f
+                                ),
+                                PropertyFactory.lineWidth(5f),
+                                PropertyFactory.lineColor(
+                                    Color.parseColor("#34b0d0")
+                                )
+                            )
+                    )
+                }
+            }
+        }
+    }
+
+    fun ambildata() {
+        // [START perf_manual_network_trace]
 
         databaseReference =
             FirebaseDatabase.getInstance().reference.child("Selecta").child("sharing")
@@ -223,7 +735,7 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
 
             }
 
-            @SuppressLint("InflateParams")
+            @SuppressLint("InflateParams", "CheckResult")
             override fun onDataChange(p0: DataSnapshot) {
                 for (values in markerMap.values) {
                     markerViewManager?.removeMarker(values)
@@ -249,22 +761,78 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
                     val gambarView: ImageView = customview.findViewById(R.id.gambarview)
 
                     lokasi = LatLng(datalatitude, datalongitude)
+/*
                     Picasso.get().load(foto).resize(50, 50).into(gambarView)
+*/
+
+
+                    Glide.with(this@ShareRombonganduaactivity).load(foto).override(50,50).listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            numStartupTasks.countDown() // Signal end of image load task.
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            numStartupTasks.countDown() // Signal end of image load task.
+                            return false
+                        }
+
+                    }).into(gambarView)
 
                     marker = MarkerView(lokasi, customview)
                     titleTextView.text = nama
                     markerViewManager?.addMarker(marker)
                     markerMap.put(counter, marker)
                     counter++
-                    //break
                 }
 
 
             }
+
         })
 
     }
 
+    fun manualNetworkTrace() {
+        val data = "badgerbadgerbadgerbadgerMUSHROOM!".toByteArray()
+
+        // [START perf_manual_network_trace]
+        val metric = FirebasePerformance.getInstance().newHttpMetric("https://www.google.com",
+            FirebasePerformance.HttpMethod.GET)
+        val url = URL("https://www.google.com")
+        metric.start()
+        val conn = url.openConnection() as HttpURLConnection
+        conn.doOutput = true
+        conn.setRequestProperty("Content-Type", "application/json")
+        try {
+            val outputStream = DataOutputStream(conn.outputStream)
+            outputStream.write(data)
+        } catch (ignored: IOException) {
+        }
+
+        metric.setRequestPayloadSize(data.size.toLong())
+        metric.setHttpResponseCode(conn.responseCode)
+        printStreamContent(conn.inputStream)
+
+        conn.disconnect()
+        metric.stop()
+        // [END perf_manual_network_trace]
+    }
+
+    private fun printStreamContent(inputStream: InputStream) {
+
+    }
 
     override fun onStart() {
         super.onStart()
@@ -544,6 +1112,7 @@ class ShareRombonganduaactivity : AppCompatActivity(), AnkoLogger, OnMapReadyCal
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+
 
     }
 

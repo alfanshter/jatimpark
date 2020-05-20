@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.perf.FirebasePerformance
 import com.karan.churi.PermissionManager.PermissionManager
 import kotlinx.android.synthetic.main.login.*
 import org.jetbrains.anko.startActivity
@@ -35,7 +36,6 @@ class Login : AppCompatActivity() {
 
     lateinit var manager: PermissionManager
     lateinit var db : DocumentReference
-
 
     lateinit var ip: String
     private lateinit var sessionManager: SessionManager
@@ -66,6 +66,7 @@ class Login : AppCompatActivity() {
 
         login.setOnClickListener {
             login()
+
         }
 
         if (sessionManager.getLogin()!!) {
@@ -80,7 +81,8 @@ class Login : AppCompatActivity() {
 
 
     fun login() {
-
+        val myTrace = FirebasePerformance.getInstance().newTrace("test_trace")
+myTrace.start()
         val progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Sedang Login .....")
         progressDialog.show()
@@ -91,7 +93,7 @@ class Login : AppCompatActivity() {
 
 
         if (!TextUtils.isEmpty(userss) && !TextUtils.isEmpty(password)) {
-
+            myTrace.incrementMetric("trace_login",1)
             auth.signInWithEmailAndPassword(userss, password)
                 .addOnCompleteListener { task ->
 
@@ -117,20 +119,26 @@ class Login : AppCompatActivity() {
                         progressDialog.dismiss()
                         toast("berhasil")
                         sessionManager.setLogin(true)
+                        myTrace.stop()
                     }
                     else
                     {
                         toast("gagal")
+                        myTrace.stop()
+
                     }
                 }
 /*
 */
                     toast("berhasil")
                         progressDialog.dismiss()
+                        myTrace.stop()
+
                     }
                     else
                     {
                         toast("gagal login")
+                        myTrace.stop()
 
                     }
                 }

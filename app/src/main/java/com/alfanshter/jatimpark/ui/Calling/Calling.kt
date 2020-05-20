@@ -40,6 +40,7 @@ class Calling : Fragment(),AnkoLogger {
         nomorku = root.find(R.id.main_myid)
         nomorku!!.text = Appsc.USER_ID
         sessionManager = SessionManager(context)
+        sessionManager.setTelfon(Appsc.USER_ID)
 
         panggilan.setOnClickListener(View.OnClickListener {
             SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
